@@ -28,4 +28,6 @@ public interface ExamPaperService extends BaseService<ExamPaper> {
     Integer selectAllCount();
 
     List<Integer> selectMothCount();
+
+    ExamPaperEditRequestVM generateRandomPaper(Integer subjectId, Integer questionCount, Integer scorePerQuestion, Integer suggestTime, String paperName, User user);
 }

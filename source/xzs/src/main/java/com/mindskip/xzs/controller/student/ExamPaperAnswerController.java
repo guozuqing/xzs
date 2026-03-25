@@ -6,6 +6,7 @@ import com.mindskip.xzs.domain.*;
 import com.mindskip.xzs.domain.enums.ExamPaperAnswerStatusEnum;
 import com.mindskip.xzs.event.CalculateExamPaperAnswerCompleteEvent;
 import com.mindskip.xzs.event.UserEvent;
+import com.mindskip.xzs.repository.ExamConfigMapper;
 import com.mindskip.xzs.service.ExamPaperAnswerService;
 import com.mindskip.xzs.service.ExamPaperService;
 import com.mindskip.xzs.service.SubjectService;
@@ -33,13 +34,15 @@ public class ExamPaperAnswerController extends BaseApiController {
     private final ExamPaperService examPaperService;
     private final SubjectService subjectService;
     private final ApplicationEventPublisher eventPublisher;
+    private final ExamConfigMapper examConfigMapper;
 
     @Autowired
-    public ExamPaperAnswerController(ExamPaperAnswerService examPaperAnswerService, ExamPaperService examPaperService, SubjectService subjectService, ApplicationEventPublisher eventPublisher) {
+    public ExamPaperAnswerController(ExamPaperAnswerService examPaperAnswerService, ExamPaperService examPaperService, SubjectService subjectService, ApplicationEventPublisher eventPublisher, ExamConfigMapper examConfigMapper) {
         this.examPaperAnswerService = examPaperAnswerService;
         this.examPaperService = examPaperService;
         this.subjectService = subjectService;
         this.eventPublisher = eventPublisher;
+        this.examConfigMapper = examConfigMapper;
     }
 
 
@@ -56,6 +59,19 @@ public class ExamPaperAnswerController extends BaseApiController {
             vm.setPaperScore(ExamUtil.scoreToVM(e.getPaperScore()));
             vm.setSubjectName(subject.getName());
             vm.setCreateTime(DateTimeUtil.dateFormat(e.getCreateTime()));
+            // look up pass score from exam config by subject
+            java.util.List<ExamConfig> configs = examConfigMapper.selectAllActive();
+            ExamConfig matchConfig = configs.stream()
+                    .filter(c -> c.getSubjectId().equals(e.getSubjectId()))
+                    .findFirst().orElse(null);
+            if (matchConfig != null && matchConfig.getPassScore() != null) {
+                vm.setPassScore(ExamUtil.scoreToVM(matchConfig.getPassScore()));
+                boolean passed = e.getUserScore() >= matchConfig.getPassScore();
+                vm.setPassStatus(passed ? "合格" : "不合格");
+            } else {
+                vm.setPassScore("");
+                vm.setPassStatus("");
+            }
             return vm;
         });
         return RestResponse.ok(page);

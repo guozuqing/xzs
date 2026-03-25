@@ -90,14 +90,7 @@ public class QuestionController extends BaseApiController {
             }
         }
 
-        if (qType == QuestionTypeEnum.GapFilling.getCode()) {
-            Integer fillSumScore = model.getItems().stream().mapToInt(d -> ExamUtil.scoreFromVM(d.getScore())).sum();
-            Integer questionScore = ExamUtil.scoreFromVM(model.getScore());
-            if (!fillSumScore.equals(questionScore)) {
-                String errorMsg = ErrorUtil.parameterErrorFormat("score", "空分数和与题目总分不相等");
-                return new RestResponse<>(SystemCode.ParameterValidError.getCode(), errorMsg);
-            }
-        }
+        // 分数在发布试卷时由每题分值确定，不再在题目创建时校验
         return RestResponse.ok();
     }
 }

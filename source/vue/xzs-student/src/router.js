@@ -16,7 +16,7 @@ const router = new Router({
           path: 'index',
           component: () => import('@/views/dashboard/index'),
           name: 'Dashboard',
-          meta: { title: '首页' }
+          meta: { title: '考试入口' }
         }
       ]
     },

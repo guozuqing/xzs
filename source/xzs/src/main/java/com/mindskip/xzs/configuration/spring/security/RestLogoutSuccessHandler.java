@@ -19,7 +19,7 @@ import java.util.Date;
 /**
  * @version 3.5.0
  * @description: 用户登出
- * Copyright (C), 2020-2026, 武汉思维跳跃科技有限公司
+ * Copyright (C), 2020-2026, 天空领域培训发展部
  * @date 2021/12/25 9:45
  */
 @Component
@@ -40,7 +40,7 @@ public class RestLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
         if (null != springUser) {
             User user = userService.getUserByUserName(springUser.getUsername());
             UserEventLog userEventLog = new UserEventLog(user.getId(), user.getUserName(), user.getRealName(), new Date());
-            userEventLog.setContent(user.getUserName() + " 登出了学之思开源考试系统");
+            userEventLog.setContent(user.getUserName() + " 登出了天空领域-培训发展部开源考试系统");
             eventPublisher.publishEvent(new UserEvent(userEventLog));
         }
         RestUtil.response(response, SystemCode.OK);

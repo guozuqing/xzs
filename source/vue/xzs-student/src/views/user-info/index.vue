@@ -17,7 +17,7 @@
           <el-divider/>
           <el-row class="user-info-fullInfo">
             <label>姓名：{{form.realName}}</label><br/>
-            <label>年级：{{levelFormatter(form.userLevel)}}</label><br/>
+            <label>学科：{{subjectFormatter(form.userLevel)}}</label><br/>
             <label>注册时间：{{form.createTime}}</label><br/>
           </el-row>
         </el-card>
@@ -56,10 +56,10 @@
                 <el-form-item label="手机：">
                   <el-input v-model="form.phone"></el-input>
                 </el-form-item>
-                <el-form-item label="年级：" prop="userLevel" required>
-                  <el-select v-model="form.userLevel" placeholder="年级">
-                    <el-option v-for="item in levelEnum" :key="item.key" :value="item.key"
-                               :label="item.value"></el-option>
+                <el-form-item label="学科：" prop="userLevel" required>
+                  <el-select v-model="form.userLevel" placeholder="学科">
+                    <el-option v-for="item in subjects" :key="item.id" :value="item.id"
+                               :label="item.name"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -76,6 +76,7 @@
 
 <script>
 import userApi from '@/api/user'
+import subjectApi from '@/api/subject'
 import { mapGetters, mapState } from 'vuex'
 
 export default {
@@ -94,18 +95,22 @@ export default {
         imagePath: null
       },
       formLoading: false,
+      subjects: [],
       rules: {
         realName: [
           { required: true, message: '请输入真实姓名', trigger: 'blur' }
         ],
         userLevel: [
-          { required: true, message: '请选择年级', trigger: 'change' }
+          { required: true, message: '请选择学科', trigger: 'change' }
         ]
       }
     }
   },
   created () {
     let _this = this
+    subjectApi.list().then(re => {
+      _this.subjects = re.response
+    })
     userApi.getUserEvent().then(re => {
       _this.event = re.response
     })
@@ -141,8 +146,9 @@ export default {
         }
       })
     },
-    levelFormatter (level) {
-      return this.enumFormat(this.levelEnum, level)
+    subjectFormatter (userLevel) {
+      let subject = this.subjects.find(s => s.id === userLevel)
+      return subject ? subject.name : ''
     }
   },
   computed: {
@@ -150,8 +156,7 @@ export default {
       'enumFormat'
     ]),
     ...mapState('enumItem', {
-      sexEnum: state => state.user.sexEnum,
-      levelEnum: state => state.user.levelEnum
+      sexEnum: state => state.user.sexEnum
     })
   }
 }

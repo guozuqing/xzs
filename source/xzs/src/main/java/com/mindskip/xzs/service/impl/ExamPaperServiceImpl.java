@@ -168,7 +168,6 @@ public class ExamPaperServiceImpl extends BaseServiceImpl<ExamPaper> implements 
     }
 
     private void examPaperFromVM(ExamPaperEditRequestVM examPaperEditRequestVM, ExamPaper examPaper, List<ExamPaperTitleItemVM> titleItemsVM) {
-        Integer gradeLevel = subjectService.levelBySubjectId(examPaperEditRequestVM.getSubjectId());
         Integer questionCount = titleItemsVM.stream()
                 .mapToInt(t -> t.getQuestionItems().size()).sum();
         Integer score = titleItemsVM.stream().
@@ -177,12 +176,82 @@ public class ExamPaperServiceImpl extends BaseServiceImpl<ExamPaper> implements 
                 ).sum();
         examPaper.setQuestionCount(questionCount);
         examPaper.setScore(score);
-        examPaper.setGradeLevel(gradeLevel);
+        examPaper.setGradeLevel(0);
         List<String> dateTimes = examPaperEditRequestVM.getLimitDateTime();
         if (ExamPaperTypeEnum.TimeLimit == ExamPaperTypeEnum.fromCode(examPaper.getPaperType())) {
             examPaper.setLimitStartTime(DateTimeUtil.parse(dateTimes.get(0), DateTimeUtil.STANDER_FORMAT));
             examPaper.setLimitEndTime(DateTimeUtil.parse(dateTimes.get(1), DateTimeUtil.STANDER_FORMAT));
         }
+    }
+
+    @Override
+    @Transactional
+    public ExamPaperEditRequestVM generateRandomPaper(Integer subjectId, Integer questionCount, Integer scorePerQuestion, Integer suggestTime, String paperName, User user) {
+        List<Question> questions = questionMapper.selectRandomBySubjectId(subjectId, questionCount);
+        if (questions == null || questions.isEmpty()) {
+            return null;
+        }
+
+        ExamPaperEditRequestVM vm = new ExamPaperEditRequestVM();
+        vm.setLevel(0);
+        vm.setSubjectId(subjectId);
+        vm.setPaperType(ExamPaperTypeEnum.Fixed.getCode());
+        vm.setName(paperName);
+        vm.setSuggestTime(suggestTime);
+
+        ExamPaperTitleItemVM titleItem = new ExamPaperTitleItemVM();
+        titleItem.setName(paperName);
+
+        AtomicInteger order = new AtomicInteger(1);
+        List<QuestionEditRequestVM> questionItems = questions.stream().map(q -> {
+            QuestionEditRequestVM qvm = questionService.getQuestionEditRequestVM(q);
+            qvm.setScore(ExamUtil.scoreToVM(scorePerQuestion));
+            qvm.setItemOrder(order.getAndIncrement());
+            return qvm;
+        }).collect(Collectors.toList());
+
+        titleItem.setQuestionItems(questionItems);
+        vm.setTitleItems(Arrays.asList(titleItem));
+
+        int totalScore = questionCount * scorePerQuestion;
+        vm.setScore(ExamUtil.scoreToVM(totalScore));
+
+        // Save this paper to DB so answer submission works
+        Date now = new Date();
+        ExamPaper examPaper = new ExamPaper();
+        examPaper.setName(paperName);
+        examPaper.setSubjectId(subjectId);
+        examPaper.setPaperType(ExamPaperTypeEnum.Fixed.getCode());
+        examPaper.setGradeLevel(0);
+        examPaper.setScore(totalScore);
+        examPaper.setQuestionCount(questionCount);
+        examPaper.setSuggestTime(suggestTime);
+        examPaper.setCreateUser(user.getId());
+        examPaper.setCreateTime(now);
+        examPaper.setDeleted(false);
+
+        // Build frame text content
+        List<ExamPaperTitleItemObject> frameList = new java.util.ArrayList<>();
+        ExamPaperTitleItemObject titleObj = new ExamPaperTitleItemObject();
+        titleObj.setName(paperName);
+        AtomicInteger itemOrder = new AtomicInteger(1);
+        List<ExamPaperQuestionItemObject> qItems = questions.stream().map(q -> {
+            ExamPaperQuestionItemObject qi = new ExamPaperQuestionItemObject();
+            qi.setId(q.getId());
+            qi.setItemOrder(itemOrder.getAndIncrement());
+            return qi;
+        }).collect(Collectors.toList());
+        titleObj.setQuestionItems(qItems);
+        frameList.add(titleObj);
+
+        String frameStr = JsonUtil.toJsonStr(frameList);
+        TextContent frameTextContent = new TextContent(frameStr, now);
+        textContentService.insertByFilter(frameTextContent);
+        examPaper.setFrameTextContentId(frameTextContent.getId());
+        examPaperMapper.insertSelective(examPaper);
+
+        vm.setId(examPaper.getId());
+        return vm;
     }
 
     private List<ExamPaperTitleItemObject> frameTextContentFromVM(List<ExamPaperTitleItemVM> titleItems) {

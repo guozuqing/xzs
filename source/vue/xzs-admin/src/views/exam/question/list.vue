@@ -4,15 +4,10 @@
       <el-form-item label="题目ID：">
         <el-input v-model="queryParam.id" clearable></el-input>
       </el-form-item>
-      <el-form-item label="年级：">
-        <el-select v-model="queryParam.level" placeholder="年级"  @change="levelChange" clearable>
-          <el-option v-for="item in levelEnum" :key="item.key" :value="item.key" :label="item.value"></el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="学科：">
         <el-select v-model="queryParam.subjectId" clearable>
-          <el-option v-for="item in subjectFilter" :key="item.id" :value="item.id"
-                     :label="item.name+' ( '+item.levelName+' )'"></el-option>
+          <el-option v-for="item in subjects" :key="item.id" :value="item.id"
+                     :label="item.name"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="题型：">
@@ -35,7 +30,6 @@
       <el-table-column prop="subjectId" label="学科" :formatter="subjectFormatter" width="120px"/>
       <el-table-column prop="questionType" label="题型" :formatter="questionTypeFormatter" width="70px"/>
       <el-table-column prop="shortTitle" label="题干" show-overflow-tooltip/>
-      <el-table-column prop="score" label="分数" width="60px"/>
       <el-table-column prop="difficult" label="难度" width="60px"/>
       <el-table-column prop="createTime" label="创建时间" width="160px"/>
       <el-table-column label="操作" align="center" width="220px">
@@ -67,12 +61,10 @@ export default {
       queryParam: {
         id: null,
         questionType: null,
-        level: null,
         subjectId: null,
         pageIndex: 1,
         pageSize: 10
       },
-      subjectFilter: null,
       listLoading: true,
       tableData: [],
       total: 0,
@@ -102,10 +94,6 @@ export default {
         this.queryParam.pageIndex = re.pageNum
         this.listLoading = false
       })
-    },
-    levelChange () {
-      this.queryParam.subjectId = null
-      this.subjectFilter = this.subjects.filter(data => data.level === this.queryParam.level)
     },
     addQuestion () {
       this.$router.push('/exam/question/edit/singleChoice')
@@ -147,8 +135,7 @@ export default {
     ...mapGetters('enumItem', ['enumFormat']),
     ...mapState('enumItem', {
       questionType: state => state.exam.question.typeEnum,
-      editUrlEnum: state => state.exam.question.editUrlEnum,
-      levelEnum: state => state.user.levelEnum
+      editUrlEnum: state => state.exam.question.editUrlEnum
     }),
     ...mapGetters('exam', ['subjectEnumFormat']),
     ...mapState('exam', { subjects: state => state.subjects })

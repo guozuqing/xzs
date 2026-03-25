@@ -16,6 +16,9 @@
   </el-row>
   <el-container  class="app-item-contain">
     <el-header class="align-center">
+      <div style="text-align: left; margin-bottom: 10px;">
+        <el-button type="primary" size="small" icon="el-icon-arrow-left" @click="goBack">返回</el-button>
+      </div>
       <h1>{{form.name}}</h1>
       <div>
         <span class="question-title-padding">试卷得分：{{answer.score}}</span>
@@ -78,6 +81,13 @@ export default {
     },
     questionDoRightTag (status) {
       return this.enumFormat(this.doRightTag, status)
+    },
+    goBack () {
+      if (window.history.length > 1) {
+        this.$router.go(-1)
+      } else {
+        window.close()
+      }
     },
     goAnchor (selector) {
       this.$el.querySelector(selector).scrollIntoView({ behavior: 'instant', block: 'center', inline: 'nearest' })

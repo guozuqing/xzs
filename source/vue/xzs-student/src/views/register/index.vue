@@ -7,7 +7,7 @@
       <div class="lowin-box lowin-register">
         <div class="lowin-box-inner">
           <el-form ref="loginForm" :model="loginForm">
-            <p>学之思开源考试系统</p>
+            <p>天空领域-培训发展部开源考试系统</p>
             <div class="lowin-group">
               <label>用户名 </label>
               <el-input ref="userName" v-model="loginForm.userName" class="lowin-input" placeholder="用户名"
@@ -20,9 +20,9 @@
                         @keyup.enter.native="handleLogin"/>
             </div>
             <div class="lowin-group">
-              <label>年级 </label>
-              <el-select class="lowin-input" v-model="loginForm.userLevel" placeholder="年级">
-                <el-option v-for="item in levelEnum" :key="item.key" :value="item.key" :label="item.value"></el-option>
+              <label>学科 </label>
+              <el-select class="lowin-input" v-model="loginForm.userLevel" placeholder="学科">
+                <el-option v-for="item in subjects" :key="item.id" :value="item.id" :label="item.name"></el-option>
               </el-select>
             </div>
             <el-button type="text" class="lowin-btn login-btn" @click.native.prevent="handleRegister">注册</el-button>
@@ -37,7 +37,7 @@
       </div>
     </div>
     <div class="account-foot-copyright">
-      <span>Copyright ©2019-2026 武汉思维跳跃科技有限公司 版权所有</span>
+      <span>Copyright ©2019-2026 天空领域培训发展部 版权所有</span>
     </div>
   </div>
 </template>
@@ -45,6 +45,7 @@
 <script>
 import { mapMutations, mapState } from 'vuex'
 import registerApi from '@/api/register'
+import subjectApi from '@/api/subject'
 
 export default {
   name: 'Login',
@@ -53,9 +54,16 @@ export default {
       loginForm: {
         userName: '',
         password: '',
-        userLevel: 1
-      }
+        userLevel: null
+      },
+      subjects: []
     }
+  },
+  created () {
+    let _this = this
+    subjectApi.list().then(re => {
+      _this.subjects = re.response
+    })
   },
   methods: {
     handleRegister () {
@@ -71,9 +79,6 @@ export default {
     ...mapMutations('user', ['setUserName'])
   },
   computed: {
-    ...mapState('enumItem', {
-      levelEnum: state => state.user.levelEnum
-    })
   }
 }
 </script>

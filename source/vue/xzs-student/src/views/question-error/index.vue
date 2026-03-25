@@ -1,23 +1,32 @@
 <template>
-  <div style="margin-top: 10px" class="app-contain">
-    <el-row :gutter="50">
-      <el-col :span="14">
-        <el-table v-loading="listLoading" :data="tableData" fit highlight-current-row style="width: 100%" @row-click="itemSelect">
-          <el-table-column prop="shortTitle" label="题干"  show-overflow-tooltip />
-          <el-table-column prop="questionType" label="题型"  :formatter="questionTypeFormatter" width="70" />
-          <el-table-column prop="subjectName" label="学科"  width="50" />
-          <el-table-column prop="createTime" label="做题时间"  width="170" />
-        </el-table>
-        <pagination v-show="total>0" :total="total" :background="false" :page.sync="queryParam.pageIndex" :limit.sync="queryParam.pageSize"
-                    @pagination="search" style="margin-top: 20px"/>
+  <div class="app-contain error-page">
+    <el-row :gutter="24">
+      <el-col :span="13">
+        <el-card shadow="hover" class="error-table-card">
+          <div slot="header" class="error-card-header">
+            <span class="error-card-title">错题本</span>
+            <span class="error-card-total">共 {{total}} 道错题</span>
+          </div>
+          <el-table v-loading="listLoading" :data="tableData" fit highlight-current-row style="width: 100%"
+                    @row-click="itemSelect" :row-class-name="tableRowClassName" size="medium">
+            <el-table-column type="index" label="#" width="50" align="center"/>
+            <el-table-column prop="shortTitle" label="题干" show-overflow-tooltip min-width="180"/>
+            <el-table-column prop="questionType" label="题型" :formatter="questionTypeFormatter" width="80" align="center"/>
+            <el-table-column prop="subjectName" label="学科" width="80" align="center"/>
+            <el-table-column prop="createTime" label="做题时间" width="170" align="center"/>
+          </el-table>
+          <pagination v-show="total>0" :total="total" :background="false" :page.sync="queryParam.pageIndex" :limit.sync="queryParam.pageSize"
+                      @pagination="search" style="margin-top: 20px"/>
+        </el-card>
       </el-col>
-      <el-col  :span="10" >
-        <el-card  class="record-answer-info">
-          <el-form>
-            <el-form-item>
-              <QuestionAnswerShow :qType="selectItem.questionType" :qLoading="qAnswerLoading" :question="selectItem.questionItem"  :answer="selectItem.answerItem"/>
-            </el-form-item>
-          </el-form>
+      <el-col :span="11">
+        <el-card shadow="hover" class="record-answer-info error-detail-card">
+          <div slot="header" class="error-card-header">
+            <span class="error-card-title">题目详情</span>
+          </div>
+          <div class="error-answer-content">
+            <QuestionAnswerShow :qType="selectItem.questionType" :qLoading="qAnswerLoading" :question="selectItem.questionItem" :answer="selectItem.answerItem"/>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -83,6 +92,12 @@ export default {
     },
     questionTypeFormatter (row, column, cellValue, index) {
       return this.enumFormat(this.questionTypeEnum, cellValue)
+    },
+    tableRowClassName ({ row }) {
+      if (this.selectItem && this.selectItem.id === row.id) {
+        return 'error-row-active'
+      }
+      return ''
     }
   },
   computed: {
@@ -95,5 +110,43 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.error-page {
+  padding-top: 20px;
+}
 
+.error-table-card {
+  border-radius: 8px;
+}
+
+.error-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.error-card-total {
+  font-size: 13px;
+  color: #909399;
+}
+
+.error-detail-card {
+  border-radius: 8px;
+  margin-top: 0;
+}
+
+.error-answer-content {
+  padding: 8px 0;
+  min-height: 200px;
+}
+</style>
+<style lang="scss">
+.error-row-active td {
+  background-color: #ecf5ff !important;
+}
 </style>

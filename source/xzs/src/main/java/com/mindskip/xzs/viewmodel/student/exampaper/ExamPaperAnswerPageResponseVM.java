@@ -30,6 +30,10 @@ public class ExamPaperAnswerPageResponseVM {
 
     private String userName;
 
+    private String passScore;
+
+    private String passStatus;
+
     public Integer getId() {
         return id;
     }
@@ -140,5 +144,21 @@ public class ExamPaperAnswerPageResponseVM {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getPassScore() {
+        return passScore;
+    }
+
+    public void setPassScore(String passScore) {
+        this.passScore = passScore;
+    }
+
+    public String getPassStatus() {
+        return passStatus;
+    }
+
+    public void setPassStatus(String passStatus) {
+        this.passStatus = passStatus;
     }
 }

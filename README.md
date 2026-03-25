@@ -18,17 +18,17 @@
 
 </div>
 
-# 学之思开源考试系统 - Postgresql版
+# 天空领域-培训发展部开源考试系统 - Postgresql版
 
 ## 项目介绍
 
-学之思开源考试系统是一款 java + vue 的前后端分离的考试系统。主要优点是开发、部署简单快捷、界面设计友好、代码结构清晰。支持web端和微信小程序，能覆盖到pc机和手机等设备。
+天空领域-培训发展部开源考试系统是一款 java + vue 的前后端分离的考试系统。主要优点是开发、部署简单快捷、界面设计友好、代码结构清晰。支持web端和微信小程序，能覆盖到pc机和手机等设备。
 支持多种部署方式：集成部署、前后端分离部署、docker部署。
 
 ### 演示地址
 
 * 官网：[https://www.mindskip.net](https://www.mindskip.net)
-* 学之思开源考试系统：[https://www.mindskip.net/xzs.html](https://www.mindskip.net/xzs.html)
+* 天空领域-培训发展部开源考试系统：[https://www.mindskip.net/xzs.html](https://www.mindskip.net/xzs.html)
 * 维多多培训考试系统：[https://www.mindskip.net/wdd.html](https://www.mindskip.net/wdd.html)
 * 思多多智能考试系统：[https://www.mindskip.net/sdd.html](https://www.mindskip.net/sdd.html)
 
@@ -41,7 +41,7 @@
 * 商务微信：`whmindskip`
 * 商务邮箱：`mindskip@qq.com`
 
-### 学之思仓库版本地址
+### 天空领域-培训发展部仓库版本地址
 
 * gitee - postgresql ：[https://gitee.com/mindskip/xzs](https://gitee.com/mindskip/xzs)
 * gitee - mysql ：[https://gitee.com/mindskip/xzs-mysql](https://gitee.com/mindskip/xzs-mysql)

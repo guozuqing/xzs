@@ -286,7 +286,9 @@
     <where>
       and deleted='f'
       and paper_type= #{examPaperType}
-      and grade_level=#{gradeLevel}
+      <if test="gradeLevel != null">
+        and grade_level=#{gradeLevel}
+      </if>
       <if test="examPaperType == 3 ">
       </if>
       <if test="examPaperType == 4 ">
@@ -327,5 +329,13 @@
       #{id}
     </foreach>
   </update>
+
+  <select id="selectAllPublished" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_exam_paper
+    WHERE deleted = 'f'
+    ORDER BY id DESC
+  </select>
 
 </mapper>

@@ -24,7 +24,7 @@ export default {
   },
   data () {
     return {
-      title: '学之思管理系统'
+      title: '天空领域-培训发展部管理系统'
     }
   }
 }

@@ -2,11 +2,6 @@
   <div class="app-container">
 
     <el-form :model="form" ref="form" label-width="100px" v-loading="formLoading" :rules="rules">
-      <el-form-item label="年级：" prop="gradeLevel"  required>
-        <el-select v-model="form.gradeLevel" placeholder="年级" @change="levelChange" >
-          <el-option v-for="item in levelEnum" :key="item.key" :value="item.key" :label="item.value"></el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="标题："  prop="title" required>
         <el-input v-model="form.title"></el-input>
       </el-form-item>
@@ -33,7 +28,7 @@
       <el-form :model="paperPage.queryParam" ref="queryForm" :inline="true">
         <el-form-item label="学科：" >
           <el-select v-model="paperPage.queryParam.subjectId"  clearable>
-            <el-option v-for="item in paperPage.subjectFilter" :key="item.id" :value="item.id" :label="item.name+' ( '+item.levelName+' )'"></el-option>
+            <el-option v-for="item in subjects" :key="item.id" :value="item.id" :label="item.name"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -71,18 +66,16 @@ export default {
     return {
       form: {
         id: null,
-        gradeLevel: null,
+        gradeLevel: 0,
         title: '',
         paperItems: []
       },
       formLoading: false,
       paperPage: {
-        subjectFilter: null,
         multipleSelection: [],
         showDialog: false,
         queryParam: {
           subjectId: null,
-          level: null,
           paperType: 6,
           pageIndex: 1,
           pageSize: 5
@@ -92,16 +85,13 @@ export default {
         total: 0
       },
       rules: {
-        gradeLevel: [{ required: true, message: '请输入年级', trigger: 'change' }],
         title: [{ required: true, message: '请输入任务标题', trigger: 'blur' }]
       }
     }
   },
   created () {
     let _this = this
-    this.initSubject(function () {
-      _this.paperPage.subjectFilter = _this.subjects
-    })
+    this.initSubject()
 
     let id = this.$route.query.id
     if (id && parseInt(id) !== 0) {
@@ -114,7 +104,6 @@ export default {
   },
   methods: {
     addPaper () {
-      this.paperPage.queryParam.level = this.form.gradeLevel
       this.paperPage.showDialog = true
       this.search()
     },
@@ -139,10 +128,6 @@ export default {
     examPaperSubmitForm () {
       this.paperPage.queryParam.pageIndex = 1
       this.search()
-    },
-    levelChange () {
-      this.paperPage.queryParam.subjectId = null
-      this.paperPage.subjectFilter = this.subjects.filter(data => data.level === this.form.gradeLevel)
     },
     removePaper (row) {
       this.form.paperItems.forEach((item, index, arr) => {
@@ -179,7 +164,7 @@ export default {
       this.$refs['form'].resetFields()
       this.form = {
         id: null,
-        gradeLevel: null,
+        gradeLevel: 0,
         title: '',
         paperItems: []
       }
@@ -194,8 +179,7 @@ export default {
   computed: {
     ...mapGetters('enumItem', ['enumFormat']),
     ...mapState('enumItem', {
-      questionTypeEnum: state => state.exam.question.typeEnum,
-      levelEnum: state => state.user.levelEnum
+      questionTypeEnum: state => state.exam.question.typeEnum
     }),
     ...mapGetters('exam', ['subjectEnumFormat']),
     ...mapState('exam', { subjects: state => state.subjects })

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mindskip.xzs.repository.ExamConfigMapper">
+  <resultMap id="BaseResultMap" type="com.mindskip.xzs.domain.ExamConfig">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="subject_id" jdbcType="INTEGER" property="subjectId" />
+    <result column="question_count" jdbcType="INTEGER" property="questionCount" />
+    <result column="score" jdbcType="INTEGER" property="score" />
+    <result column="suggest_time" jdbcType="INTEGER" property="suggestTime" />
+    <result column="pass_score" jdbcType="INTEGER" property="passScore" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, subject_id, question_count, score, suggest_time, pass_score, create_user, create_time, deleted
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/> FROM t_exam_config WHERE id = #{id}
+  </select>
+
+  <select id="selectAllActive" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/> FROM t_exam_config WHERE deleted = false ORDER BY id DESC
+  </select>
+
+  <insert id="insertSelective" parameterType="com.mindskip.xzs.domain.ExamConfig" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO t_exam_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">name,</if>
+      <if test="subjectId != null">subject_id,</if>
+      <if test="questionCount != null">question_count,</if>
+      <if test="score != null">score,</if>
+      <if test="suggestTime != null">suggest_time,</if>
+      <if test="passScore != null">pass_score,</if>
+      <if test="createUser != null">create_user,</if>
+      <if test="createTime != null">create_time,</if>
+      <if test="deleted != null">deleted,</if>
+    </trim>
+    <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+      <if test="name != null">#{name,jdbcType=VARCHAR},</if>
+      <if test="subjectId != null">#{subjectId,jdbcType=INTEGER},</if>
+      <if test="questionCount != null">#{questionCount,jdbcType=INTEGER},</if>
+      <if test="score != null">#{score,jdbcType=INTEGER},</if>
+      <if test="suggestTime != null">#{suggestTime,jdbcType=INTEGER},</if>
+      <if test="passScore != null">#{passScore,jdbcType=INTEGER},</if>
+      <if test="createUser != null">#{createUser,jdbcType=INTEGER},</if>
+      <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+      <if test="deleted != null">#{deleted,jdbcType=BIT},</if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.mindskip.xzs.domain.ExamConfig">
+    UPDATE t_exam_config
+    <set>
+      <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+      <if test="subjectId != null">subject_id = #{subjectId,jdbcType=INTEGER},</if>
+      <if test="questionCount != null">question_count = #{questionCount,jdbcType=INTEGER},</if>
+      <if test="score != null">score = #{score,jdbcType=INTEGER},</if>
+      <if test="suggestTime != null">suggest_time = #{suggestTime,jdbcType=INTEGER},</if>
+      <if test="passScore != null">pass_score = #{passScore,jdbcType=INTEGER},</if>
+      <if test="deleted != null">deleted = #{deleted,jdbcType=BIT},</if>
+    </set>
+    WHERE id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="deleteById" parameterType="java.lang.Integer">
+    UPDATE t_exam_config SET deleted = true WHERE id = #{id}
+  </update>
+
+</mapper>

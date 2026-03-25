@@ -11,7 +11,6 @@ import java.util.List;
 
 public class ExamPaperEditRequestVM {
     private Integer id;
-    @NotNull
     private Integer level;
     @NotNull
     private Integer subjectId;

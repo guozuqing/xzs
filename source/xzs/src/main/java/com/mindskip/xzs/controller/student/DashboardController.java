@@ -2,21 +2,20 @@ package com.mindskip.xzs.controller.student;
 
 import com.mindskip.xzs.base.BaseApiController;
 import com.mindskip.xzs.base.RestResponse;
-import com.mindskip.xzs.domain.TaskExam;
-import com.mindskip.xzs.domain.TaskExamCustomerAnswer;
-import com.mindskip.xzs.domain.TextContent;
-import com.mindskip.xzs.domain.User;
+import com.mindskip.xzs.domain.*;
 import com.mindskip.xzs.domain.enums.ExamPaperTypeEnum;
 import com.mindskip.xzs.domain.task.TaskItemAnswerObject;
 import com.mindskip.xzs.domain.task.TaskItemObject;
+import com.mindskip.xzs.repository.ExamPaperAnswerMapper;
+import com.mindskip.xzs.repository.ExamConfigMapper;
 import com.mindskip.xzs.service.*;
 import com.mindskip.xzs.utility.DateTimeUtil;
+import com.mindskip.xzs.utility.ExamUtil;
 import com.mindskip.xzs.utility.JsonUtil;
+import com.mindskip.xzs.viewmodel.admin.exam.ExamPaperEditRequestVM;
 import com.mindskip.xzs.viewmodel.student.dashboard.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,15 +32,19 @@ public class DashboardController extends BaseApiController {
     private final TaskExamService taskExamService;
     private final TaskExamCustomerAnswerService taskExamCustomerAnswerService;
     private final TextContentService textContentService;
+    private final ExamPaperAnswerMapper examPaperAnswerMapper;
+    private final ExamConfigMapper examConfigMapper;
 
     @Autowired
-    public DashboardController(UserService userService, ExamPaperService examPaperService, QuestionService questionService, TaskExamService taskExamService, TaskExamCustomerAnswerService taskExamCustomerAnswerService, TextContentService textContentService) {
+    public DashboardController(UserService userService, ExamPaperService examPaperService, QuestionService questionService, TaskExamService taskExamService, TaskExamCustomerAnswerService taskExamCustomerAnswerService, TextContentService textContentService, ExamPaperAnswerMapper examPaperAnswerMapper, ExamConfigMapper examConfigMapper) {
         this.userService = userService;
         this.examPaperService = examPaperService;
         this.questionService = questionService;
         this.taskExamService = taskExamService;
         this.taskExamCustomerAnswerService = taskExamCustomerAnswerService;
         this.textContentService = textContentService;
+        this.examPaperAnswerMapper = examPaperAnswerMapper;
+        this.examConfigMapper = examConfigMapper;
     }
 
     @RequestMapping(value = "/index", method = RequestMethod.POST)
@@ -50,13 +53,11 @@ public class DashboardController extends BaseApiController {
         User user = getCurrentUser();
 
         PaperFilter fixedPaperFilter = new PaperFilter();
-        fixedPaperFilter.setGradeLevel(user.getUserLevel());
         fixedPaperFilter.setExamPaperType(ExamPaperTypeEnum.Fixed.getCode());
         indexVM.setFixedPaper(examPaperService.indexPaper(fixedPaperFilter));
 
         PaperFilter timeLimitPaperFilter = new PaperFilter();
         timeLimitPaperFilter.setDateTime(new Date());
-        timeLimitPaperFilter.setGradeLevel(user.getUserLevel());
         timeLimitPaperFilter.setExamPaperType(ExamPaperTypeEnum.TimeLimit.getCode());
 
         List<PaperInfo> limitPaper = examPaperService.indexPaper(timeLimitPaperFilter);
@@ -70,11 +71,72 @@ public class DashboardController extends BaseApiController {
         return RestResponse.ok(indexVM);
     }
 
+    @RequestMapping(value = "/examConfig", method = RequestMethod.POST)
+    public RestResponse<ExamConfigVM> examConfig() {
+        User user = getCurrentUser();
+        ExamConfigVM config = new ExamConfigVM();
+        config.setRealName(user.getRealName());
+        config.setUserName(user.getUserName());
+        config.setUserLevel(user.getUserLevel());
+        config.setUserTypeName("");
+
+        List<ExamConfig> configs = examConfigMapper.selectAllActive();
+        List<ExamItemVM> examItems = configs.stream().map(cfg -> {
+            ExamItemVM item = new ExamItemVM();
+            item.setExamName(cfg.getName());
+            item.setExamType("theory");
+            item.setSubjectId(cfg.getSubjectId());
+            item.setQuestionCount(cfg.getQuestionCount());
+            item.setSuggestTime(cfg.getSuggestTime());
+            item.setTotalScore(ExamUtil.scoreToVM(cfg.getScore()));
+            int scorePerQ = cfg.getScore() / cfg.getQuestionCount();
+            item.setScorePerQuestion(ExamUtil.scoreToVM(scorePerQ));
+            item.setPassScore(ExamUtil.scoreToVM(cfg.getPassScore() != null ? cfg.getPassScore() : (int)(cfg.getScore() * 0.8)));
+            fillLastExamInfo(item, user.getId(), cfg.getSubjectId());
+            return item;
+        }).collect(Collectors.toList());
+
+        config.setExamItems(examItems);
+        return RestResponse.ok(config);
+    }
+
+    private void fillLastExamInfo(ExamItemVM item, Integer userId, Integer subjectId) {
+        ExamPaperAnswer lastAnswer = examPaperAnswerMapper.getLastByUserAndSubject(userId, subjectId);
+        if (lastAnswer != null) {
+            item.setLastScore(ExamUtil.scoreToVM(lastAnswer.getUserScore()));
+            int passScoreInt = (int) (Float.parseFloat(item.getPassScore()) * 10);
+            if (lastAnswer.getUserScore() >= passScoreInt) {
+                item.setLastResult("通过");
+            } else {
+                item.setLastResult("未通过");
+            }
+            item.setLastTime(DateTimeUtil.dateFormat(lastAnswer.getCreateTime()));
+        }
+    }
+
+    @RequestMapping(value = "/generatePaper", method = RequestMethod.POST)
+    public RestResponse<ExamPaperEditRequestVM> generatePaper(@RequestBody ExamItemVM examItemVM) {
+        User user = getCurrentUser();
+        Integer scorePerQuestion = ExamUtil.scoreFromVM(examItemVM.getScorePerQuestion());
+        ExamPaperEditRequestVM paper = examPaperService.generateRandomPaper(
+                examItemVM.getSubjectId(),
+                examItemVM.getQuestionCount(),
+                scorePerQuestion,
+                examItemVM.getSuggestTime(),
+                examItemVM.getExamName(),
+                user
+        );
+        if (paper == null) {
+            return RestResponse.fail(2, "题库中没有足够的题目");
+        }
+        return RestResponse.ok(paper);
+    }
+
 
     @RequestMapping(value = "/task", method = RequestMethod.POST)
     public RestResponse<List<TaskItemVm>> task() {
         User user = getCurrentUser();
-        List<TaskExam> taskExams = taskExamService.getByGradeLevel(user.getUserLevel());
+        List<TaskExam> taskExams = taskExamService.getByGradeLevel(null);
         if (taskExams.size() == 0) {
             return RestResponse.ok(new ArrayList<>());
         }

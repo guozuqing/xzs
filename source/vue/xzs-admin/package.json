@@ -1,8 +1,8 @@
 {
     "name": "xzs-admin",
     "version": "3.9.0",
-    "author": "武汉思维跳跃科技有限公司",
-    "description": "学之思管理系统",
+    "author": "天空领域培训发展部",
+    "description": "天空领域-培训发展部管理系统",
     "license": "AGPL-3.0",
     "private": true,
     "homepage": "https://www.mindskip.net/xzs.html",
@@ -70,7 +70,7 @@
         "babel-eslint": "^10.1.0",
         "eslint": "^5.16.0",
         "eslint-plugin-vue": "^5.2.3",
-        "node-sass": "^6.0.1",
+        "sass": "^1.32.13",
         "sass-loader": "^10.5.2",
         "svg-sprite-loader": "4.1.6",
         "vue-template-compiler": "^2.7.16"

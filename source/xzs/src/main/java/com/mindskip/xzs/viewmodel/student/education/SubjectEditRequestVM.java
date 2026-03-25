@@ -12,10 +12,8 @@ public class SubjectEditRequestVM extends BaseVM {
     @NotBlank
     private String name;
 
-    @NotNull
     private Integer level;
 
-    @NotBlank
     private String levelName;
 
     public Integer getId() {

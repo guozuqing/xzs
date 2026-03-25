@@ -1,5 +1,11 @@
 server:
   port: 8000
+  servlet:
+    session:
+      cookie:
+        same-site: lax
+        path: /
+        http-only: true
   undertow:
     io-threads: 16
     worker-threads: 4000

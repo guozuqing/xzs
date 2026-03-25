@@ -1,58 +1,95 @@
 <template>
-  <div style="margin-top: 10px" class="app-contain">
-     <el-row :gutter="50">
-       <el-col :span="18">
-         <el-table v-loading="listLoading" :data="tableData" fit highlight-current-row style="width: 100%" @row-click="itemSelect">
-           <el-table-column prop="id" label="序号" width="90px"/>
-           <el-table-column prop="paperName" label="名称"  />
-           <el-table-column prop="subjectName" label="学科"  width="70" />
-           <el-table-column label="状态" prop="status" width="100px">
-             <template slot-scope="{row}">
-               <el-tag :type="statusTagFormatter(row.status)">
-                 {{ statusTextFormatter(row.status) }}
-               </el-tag>
-             </template>
-           </el-table-column>
-           <el-table-column prop="createTime" label="做题时间"  width="170" />
-           <el-table-column  align="right" width="70">
-             <template slot-scope="{row}">
-               <router-link target="_blank" :to="{path:'/edit',query:{id:row.id}}" v-if="row.status === 1 ">
-                 <el-button  type="text" size="small">批改</el-button>
-               </router-link>
-               <router-link target="_blank" :to="{path:'/read',query:{id:row.id}}" v-if="row.status === 2 ">
-                 <el-button  type="text" size="small">查看试卷</el-button>
-               </router-link>
-             </template>
-           </el-table-column>
-         </el-table>
-         <pagination v-show="total>0" :total="total" :background="false" :page.sync="queryParam.pageIndex" :limit.sync="queryParam.pageSize"
-                     @pagination="search" style="margin-top: 20px"/>
-       </el-col>
-       <el-col  :span="6" >
-         <el-card  class="record-answer-info">
-            <el-form label-width="50%" >
-              <el-form-item label="系统判分：">
-                <span>{{selectItem.systemScore}}</span>
-              </el-form-item>
-              <el-form-item label="最终得分：">
-                <span>{{selectItem.userScore}}</span>
-              </el-form-item>
-              <el-form-item label="试卷总分：">
-                <span>{{selectItem.paperScore}}</span>
-              </el-form-item>
-              <el-form-item label="正确题数：">
-                <span>{{selectItem.questionCorrect}}</span>
-              </el-form-item>
-              <el-form-item label="总题数：">
-                <span>{{selectItem.questionCount}}</span>
-              </el-form-item>
-              <el-form-item label="用时：">
-                <span>{{selectItem.doTime}}</span>
-              </el-form-item>
-            </el-form>
-         </el-card>
-       </el-col>
-     </el-row>
+  <div class="app-contain record-page">
+    <el-row :gutter="24">
+      <el-col :span="17">
+        <el-card shadow="hover" class="record-table-card">
+          <div slot="header" class="record-card-header">
+            <span class="record-card-title">考试记录</span>
+            <span class="record-card-total">共 {{total}} 条记录</span>
+          </div>
+          <el-table v-loading="listLoading" :data="tableData" fit highlight-current-row style="width: 100%"
+                    @row-click="itemSelect" :row-class-name="tableRowClassName" size="medium">
+            <el-table-column type="index" label="#" width="50px" align="center"/>
+            <el-table-column prop="paperName" label="试卷名称" min-width="160" show-overflow-tooltip/>
+            <el-table-column prop="subjectName" label="学科" width="80" align="center"/>
+            <el-table-column label="状态" prop="status" width="90" align="center">
+              <template slot-scope="{row}">
+                <el-tag size="small" :type="statusTagFormatter(row.status)">
+                  {{ statusTextFormatter(row.status) }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="userScore" label="得分" width="70" align="center"/>
+            <el-table-column prop="passScore" label="合格分" width="70" align="center"/>
+            <el-table-column label="是否合格" width="90" align="center">
+              <template slot-scope="{row}">
+                <el-tag size="small" :type="row.passStatus === '合格' ? 'success' : (row.passStatus === '不合格' ? 'danger' : 'info')" v-if="row.passStatus">
+                  {{ row.passStatus }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="createTime" label="做题时间" width="170" align="center"/>
+            <el-table-column label="操作" align="center" width="90">
+              <template slot-scope="{row}">
+                <router-link target="_blank" :to="{path:'/edit',query:{id:row.id}}" v-if="row.status === 1">
+                  <el-button type="primary" size="mini" plain>批改</el-button>
+                </router-link>
+                <router-link target="_blank" :to="{path:'/read',query:{id:row.id}}" v-if="row.status === 2">
+                  <el-button type="primary" size="mini" plain>查看</el-button>
+                </router-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <pagination v-show="total>0" :total="total" :background="false" :page.sync="queryParam.pageIndex" :limit.sync="queryParam.pageSize"
+                      @pagination="search" style="margin-top: 20px"/>
+        </el-card>
+      </el-col>
+      <el-col :span="7">
+        <el-card shadow="hover" class="record-answer-info record-detail-card">
+          <div slot="header" class="record-card-header">
+            <span class="record-card-title">成绩详情</span>
+          </div>
+          <div class="record-detail-list">
+            <div class="record-detail-row">
+              <span class="record-detail-label">系统判分</span>
+              <span class="record-detail-value">{{selectItem.systemScore}}</span>
+            </div>
+            <div class="record-detail-row">
+              <span class="record-detail-label">最终得分</span>
+              <span class="record-detail-value highlight-score">{{selectItem.userScore}}</span>
+            </div>
+            <div class="record-detail-row">
+              <span class="record-detail-label">试卷总分</span>
+              <span class="record-detail-value">{{selectItem.paperScore}}</span>
+            </div>
+            <el-divider></el-divider>
+            <div class="record-detail-row">
+              <span class="record-detail-label">正确题数</span>
+              <span class="record-detail-value">{{selectItem.questionCorrect}}</span>
+            </div>
+            <div class="record-detail-row">
+              <span class="record-detail-label">总题数</span>
+              <span class="record-detail-value">{{selectItem.questionCount}}</span>
+            </div>
+            <div class="record-detail-row">
+              <span class="record-detail-label">用时</span>
+              <span class="record-detail-value">{{selectItem.doTime}}</span>
+            </div>
+            <el-divider></el-divider>
+            <div class="record-detail-row">
+              <span class="record-detail-label">合格分数</span>
+              <span class="record-detail-value">{{selectItem.passScore || '--'}}</span>
+            </div>
+            <div class="record-detail-row">
+              <span class="record-detail-label">是否合格</span>
+              <span class="record-detail-value" :class="{'pass-success': selectItem.passStatus === '合格', 'pass-fail': selectItem.passStatus === '不合格'}">
+                {{selectItem.passStatus || '--'}}
+              </span>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -106,6 +143,12 @@ export default {
     },
     statusTextFormatter (status) {
       return this.enumFormat(this.statusEnum, status)
+    },
+    tableRowClassName ({ row }) {
+      if (this.selectItem && this.selectItem.id === row.id) {
+        return 'record-row-active'
+      }
+      return ''
     }
   },
   computed: {
@@ -121,5 +164,81 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.record-page {
+  padding-top: 20px;
+}
 
+.record-table-card {
+  border-radius: 8px;
+}
+
+.record-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.record-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.record-card-total {
+  font-size: 13px;
+  color: #909399;
+}
+
+.record-detail-card {
+  border-radius: 8px;
+  margin-top: 0;
+}
+
+.record-detail-list {
+  padding: 4px 0;
+}
+
+.record-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.record-detail-row:hover {
+  background-color: #f5f7fa;
+}
+
+.record-detail-label {
+  font-size: 14px;
+  color: #606266;
+}
+
+.record-detail-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.highlight-score {
+  font-size: 18px;
+  color: #409EFF;
+}
+
+.pass-success {
+  color: #67c23a;
+  font-weight: bold;
+}
+
+.pass-fail {
+  color: #f56c6c;
+  font-weight: bold;
+}
+</style>
+<style lang="scss">
+.record-row-active td {
+  background-color: #ecf5ff !important;
+}
 </style>

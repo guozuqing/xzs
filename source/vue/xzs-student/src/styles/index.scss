@@ -24,26 +24,46 @@ html {
 
 .student-header {
   border-bottom: solid 1px #e6e6e6 !important;
-  padding: 0px !important;
+  padding: 0px 20px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .header-brand {
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 700;
+    color: #409EFF;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    line-height: 60px;
+    display: inline-block;
+  }
+
+  .header-brand:hover {
+    opacity: 0.85;
+  }
 
   .el-menu-title {
     border-bottom: 0px !important;
-    float: right;
+    display: flex;
+    align-items: center;
 
     .el-menu-item {
       font-size: 15px !important;
-      line-height: 62px !important;
+      line-height: 60px !important;
+      height: 60px !important;
     }
   }
 
   .head-user {
     color: #909399;
-    float: right;
-    margin: 0px 0px 0px 10px;
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
 
     .el-dropdown-avatar {
-      margin-top: 12px;
-      margin-right: 20px;
+      margin-right: 10px;
       cursor: pointer;
     }
 
@@ -250,6 +270,7 @@ html {
 }
 
 .question-show-item-analyze {
+  margin-top: 10px;
 }
 
 .user-info-userName {

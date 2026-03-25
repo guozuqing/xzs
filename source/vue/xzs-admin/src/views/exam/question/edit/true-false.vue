@@ -1,14 +1,9 @@
 <template>
   <div class="app-container">
     <el-form :model="form" ref="form" label-width="100px" v-loading="formLoading"  :rules="rules">
-      <el-form-item label="年级：" prop="gradeLevel" required>
-        <el-select v-model="form.gradeLevel" placeholder="年级"  @change="levelChange">
-          <el-option v-for="item in levelEnum" :key="item.key" :value="item.key" :label="item.value"></el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="学科：" prop="subjectId" required>
         <el-select v-model="form.subjectId" placeholder="学科" >
-          <el-option v-for="item in subjectFilter" :key="item.id" :value="item.id" :label="item.name+' ( '+item.levelName+' )'"></el-option>
+          <el-option v-for="item in subjects" :key="item.id" :value="item.id" :label="item.name"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="题干：" prop="title" required>
@@ -22,9 +17,6 @@
       </el-form-item>
       <el-form-item label="解析：" prop="analyze" required>
         <el-input v-model="form.analyze"  @focus="inputClick(form,'analyze')" />
-      </el-form-item>
-      <el-form-item label="分数：" prop="score" required>
-        <el-input-number v-model="form.score" :precision="1" :step="1" :max="100"></el-input-number>
       </el-form-item>
       <el-form-item label="难度：" required>
         <el-rate v-model="form.difficult" class="question-item-rate"></el-rate>
@@ -68,7 +60,6 @@ export default {
       form: {
         id: null,
         questionType: 3,
-        gradeLevel: null,
         subjectId: null,
         title: '',
         items: [
@@ -77,15 +68,10 @@ export default {
         ],
         analyze: '',
         correct: '',
-        score: '',
         difficult: 0
       },
-      subjectFilter: null,
       formLoading: false,
       rules: {
-        gradeLevel: [
-          { required: true, message: '请选择年级', trigger: 'change' }
-        ],
         subjectId: [
           { required: true, message: '请选择学科', trigger: 'change' }
         ],
@@ -94,9 +80,6 @@ export default {
         ],
         analyze: [
           { required: true, message: '请输入解析', trigger: 'blur' }
-        ],
-        score: [
-          { required: true, message: '请输入分数', trigger: 'blur' }
         ],
         correct: [
           { required: true, message: '请选择正确答案', trigger: 'change' }
@@ -119,9 +102,7 @@ export default {
   created () {
     let id = this.$route.query.id
     let _this = this
-    this.initSubject(function () {
-      _this.subjectFilter = _this.subjects
-    })
+    this.initSubject()
     if (id && parseInt(id) !== 0) {
       _this.formLoading = true
       questionApi.select(id).then(re => {
@@ -177,7 +158,6 @@ export default {
       this.form = {
         id: null,
         questionType: 3,
-        gradeLevel: null,
         subjectId: null,
         title: '',
         items: [
@@ -186,14 +166,9 @@ export default {
         ],
         analyze: '',
         correct: '',
-        score: '',
         difficult: 0
       }
       this.form.id = lastId
-    },
-    levelChange () {
-      this.form.subjectId = null
-      this.subjectFilter = this.subjects.filter(data => data.level === this.form.gradeLevel)
     },
     showQuestion () {
       this.questionShow.dialog = true
@@ -206,8 +181,7 @@ export default {
   computed: {
     ...mapGetters('enumItem', ['enumFormat']),
     ...mapState('enumItem', {
-      questionTypeEnum: state => state.exam.question.typeEnum,
-      levelEnum: state => state.user.levelEnum
+      questionTypeEnum: state => state.exam.question.typeEnum
     }),
     ...mapState('exam', { subjects: state => state.subjects })
   }

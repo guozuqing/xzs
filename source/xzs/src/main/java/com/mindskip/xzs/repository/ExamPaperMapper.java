@@ -30,4 +30,6 @@ public interface ExamPaperMapper extends BaseMapper<ExamPaper> {
     int updateTaskPaper(@Param("taskId") Integer taskId,@Param("paperIds") List<Integer> paperIds);
 
     int clearTaskPaper(@Param("paperIds") List<Integer> paperIds);
+
+    List<ExamPaper> selectAllPublished();
 }

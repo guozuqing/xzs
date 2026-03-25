@@ -16,7 +16,7 @@
       <el-table-column prop="id" label="Id" />
       <el-table-column prop="userName" label="用户名"/>
       <el-table-column prop="realName" label="真实姓名" />
-      <el-table-column prop="userLevel" label="学级"  :formatter="levelFormatter"/>
+      <el-table-column prop="userLevel" label="学科"  :formatter="subjectFormatter"/>
       <el-table-column prop="sex" label="性别" width="60px;" :formatter="sexFormatter"/>
       <el-table-column prop="phone" label="手机号"/>
       <el-table-column prop="createTime" label="创建时间" width="160px"/>
@@ -51,6 +51,7 @@
 import { mapGetters, mapState } from 'vuex'
 import Pagination from '@/components/Pagination'
 import userApi from '@/api/user'
+import subjectApi from '@/api/subject'
 
 export default {
   components: { Pagination },
@@ -64,10 +65,14 @@ export default {
       },
       listLoading: true,
       tableData: [],
-      total: 0
+      total: 0,
+      subjects: []
     }
   },
   created () {
+    subjectApi.list().then(re => {
+      this.subjects = re.response
+    })
     this.search()
   },
   methods: {
@@ -107,8 +112,9 @@ export default {
       this.queryParam.pageIndex = 1
       this.search()
     },
-    levelFormatter  (row, column, cellValue, index) {
-      return this.enumFormat(this.levelEnum, cellValue)
+    subjectFormatter  (row, column, cellValue, index) {
+      let subject = this.subjects.find(s => s.id === cellValue)
+      return subject ? subject.name : ''
     },
     sexFormatter  (row, column, cellValue, index) {
       return this.enumFormat(this.sexEnum, cellValue)
@@ -131,8 +137,7 @@ export default {
       sexEnum: state => state.user.sexEnum,
       statusEnum: state => state.user.statusEnum,
       statusTag: state => state.user.statusTag,
-      statusBtn: state => state.user.statusBtn,
-      levelEnum: state => state.user.levelEnum
+      statusBtn: state => state.user.statusBtn
     })
   }
 }

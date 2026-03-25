@@ -225,4 +225,13 @@
 		GROUP BY create_time
 	</select>
 
+  <select id="selectRandomBySubjectId" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_question
+    WHERE deleted='f' AND subject_id = #{subjectId}
+    ORDER BY random()
+    LIMIT #{limitCount}
+  </select>
+
 </mapper>

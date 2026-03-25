@@ -262,4 +262,13 @@
     </where>
   </select>
 
+  <select id="getLastByUserAndSubject" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_exam_paper_answer
+    WHERE create_user = #{userId} AND subject_id = #{subjectId}
+    ORDER BY id DESC
+    LIMIT 1
+  </select>
+
 </mapper>
