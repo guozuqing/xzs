@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController("AdminQuestionController")
 @RequestMapping(value = "/api/admin/question")
@@ -78,6 +79,48 @@ public class QuestionController extends BaseApiController {
         question.setDeleted(true);
         questionService.updateByIdFilter(question);
         return RestResponse.ok();
+    }
+
+    @RequestMapping(value = "/export", method = RequestMethod.POST)
+    public RestResponse<List<QuestionEditRequestVM>> exportQuestions(@RequestBody QuestionPageRequestVM model) {
+        model.setPageIndex(1);
+        model.setPageSize(10000);
+        PageInfo<Question> pageInfo = questionService.page(model);
+        List<QuestionEditRequestVM> result = new java.util.ArrayList<>();
+        for (Question q : pageInfo.getList()) {
+            try {
+                QuestionEditRequestVM vm = questionService.getQuestionEditRequestVM(q);
+                vm.setId(null);
+                result.add(vm);
+            } catch (Exception ignored) {
+            }
+        }
+        return RestResponse.ok(result);
+    }
+
+    @RequestMapping(value = "/import", method = RequestMethod.POST)
+    public RestResponse importQuestions(@RequestBody @Valid List<QuestionEditRequestVM> list) {
+        int successCount = 0;
+        int failCount = 0;
+        for (QuestionEditRequestVM model : list) {
+            try {
+                RestResponse validResult = validQuestionEditRequestVM(model);
+                if (validResult.getCode() != SystemCode.OK.getCode()) {
+                    failCount++;
+                    continue;
+                }
+                model.setId(null);
+                questionService.insertFullQuestion(model, getCurrentUser().getId());
+                successCount++;
+            } catch (Exception e) {
+                failCount++;
+            }
+        }
+        String msg = "成功导入 " + successCount + " 题";
+        if (failCount > 0) {
+            msg += "，失败 " + failCount + " 题";
+        }
+        return RestResponse.ok(msg);
     }
 
     private RestResponse validQuestionEditRequestVM(QuestionEditRequestVM model) {

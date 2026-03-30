@@ -1,11 +1,47 @@
 <wxs module="enumItem" src="../../wxs/enumItem.wxs"></wxs>
-<view>
-  <view>
-    <i-cell-group>
-      <i-cell wx:for="{{tableData}}" data-item="item" wx:key="{{item.id}}" title="{{item.paperName}}" is-link url="/pages/exam/read/index?id={{item.id}}" value="{{enumItem.format(enumItem.state.exam.examPaperAnswer.statusEnum,item.status)}}" label="{{item.subjectName}}  对错：{{item.questionCorrect}}/{{item.questionCount}} 时间：{{item.createTime}} "
-      />
-    </i-cell-group>
+<view class="record-page">
+  <!-- 顶部统计 -->
+  <view class="record-stats card" wx:if="{{tableData.length > 0}}">
+    <view class="stat-item">
+      <text class="stat-value">{{tableData.length}}</text>
+      <text class="stat-label">本页记录</text>
+    </view>
   </view>
+
+  <!-- 记录列表 -->
+  <view class="record-list">
+    <view class="record-card" wx:for="{{tableData}}" wx:key="{{item.id}}" bindtap="goRead" data-id="{{item.id}}" data-status="{{item.status}}">
+      <view class="record-card-header">
+        <text class="record-paper-name">{{item.paperName}}</text>
+        <view class="tag {{item.status === 2 ? 'tag-success' : 'tag-warning'}}">
+          {{enumItem.format(enumItem.state.exam.examPaperAnswer.statusEnum, item.status)}}
+        </view>
+      </view>
+      <view class="record-card-body">
+        <view class="record-info-row">
+          <text class="record-info-label">学科</text>
+          <text class="record-info-value">{{item.subjectName}}</text>
+        </view>
+        <view class="record-info-row">
+          <text class="record-info-label">正确/总题</text>
+          <text class="record-info-value record-score">{{item.questionCorrect}}/{{item.questionCount}}</text>
+        </view>
+        <view class="record-info-row">
+          <text class="record-info-label">做题时间</text>
+          <text class="record-info-value">{{item.createTime}}</text>
+        </view>
+      </view>
+      <view class="record-card-footer">
+        <text class="record-action-btn">{{item.status === 1 ? '去批改' : '查看详情'}} ></text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="card" wx:if="{{!spinShow && tableData.length === 0}}">
+      <view class="empty-state">暂无考试记录</view>
+    </view>
+  </view>
+
   <i-load-more tip="{{loadMoreTip}}" loading="{{loadMoreLoad}}" />
   <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
   <i-message id="message" />

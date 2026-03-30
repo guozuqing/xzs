@@ -1,0 +1,61 @@
+<!--pages/video/detail/index.wxml-->
+<view class="video-detail-page">
+  <!-- 视频播放器 -->
+  <view class="video-player-wrap">
+    <video
+      wx:if="{{currentVideoUrl}}"
+      id="videoPlayer"
+      src="{{currentVideoUrl}}"
+      class="video-player"
+      controls
+      autoplay
+      show-center-play-btn="{{true}}"
+      show-play-btn="{{true}}"
+      enable-progress-gesture="{{true}}"
+      binderror="onVideoError"
+    ></video>
+    <view wx:else class="video-player-empty">
+      <text class="video-player-empty-text">暂无视频资源</text>
+    </view>
+  </view>
+
+  <!-- 视频信息 -->
+  <view class="video-info card">
+    <text class="video-info-name">{{video.name}}</text>
+    <text class="video-info-subject" wx:if="{{video.subjectName}}">{{video.subjectName}}</text>
+    <text class="video-info-desc" wx:if="{{video.description}}">{{video.description}}</text>
+  </view>
+
+  <!-- 章节列表 -->
+  <view class="chapter-section card" wx:if="{{chapters.length > 0}}">
+    <view class="section-header">
+      <view class="section-title-bar"></view>
+      <text class="section-title">课程章节</text>
+      <text class="section-count">共{{chapters.length}}节</text>
+    </view>
+    <view class="chapter-list">
+      <view
+        class="chapter-item {{currentChapterIndex == index ? 'chapter-item-active' : ''}}"
+        wx:for="{{chapters}}"
+        wx:key="id"
+        bindtap="onChapterTap"
+        data-index="{{index}}"
+      >
+        <view class="chapter-item-left">
+          <view class="chapter-index {{currentChapterIndex == index ? 'chapter-index-active' : ''}}">
+            <text>{{index + 1}}</text>
+          </view>
+          <view class="chapter-item-info">
+            <text class="chapter-item-title">{{item.title}}</text>
+            <text class="chapter-item-duration" wx:if="{{item.duration > 0}}">{{item.duration}}秒</text>
+          </view>
+        </view>
+        <text class="chapter-playing" wx:if="{{currentChapterIndex == index}}">播放中</text>
+        <text class="chapter-item-arrow" wx:else>▶</text>
+      </view>
+    </view>
+  </view>
+
+  <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
+  <i-message id="message" />
+</view>

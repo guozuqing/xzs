@@ -66,7 +66,8 @@ export default {
   overflow: hidden;
   position: relative;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  box-shadow: 0 1px 4px rgba(74, 144, 226, 0.08);
+  border-bottom: 1px solid #eef2f8;
 
   .hamburger-container {
     line-height: 46px;
@@ -77,7 +78,7 @@ export default {
     -webkit-tap-highlight-color:transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      background: #f0f4ff;
     }
   }
 
@@ -104,7 +105,7 @@ export default {
       padding: 0 8px;
       height: 100%;
       font-size: 18px;
-      color: #5a5e66;
+      color: #5a6a85;
       vertical-align: text-bottom;
 
       &.hover-effect {
@@ -112,7 +113,7 @@ export default {
         transition: background .3s;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+          background: #f0f4ff;
         }
       }
     }

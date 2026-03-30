@@ -24,6 +24,22 @@ Page({
       this.indexLoad()
     }
   },
+  goExam() {
+    wx.switchTab({ url: '/pages/exam/index/index' })
+  },
+  goRecord() {
+    wx.switchTab({ url: '/pages/record/index' })
+  },
+  goVideo() {
+    wx.switchTab({ url: '/pages/video/index/index' })
+  },
+  goMy() {
+    wx.switchTab({ url: '/pages/my/index/index' })
+  },
+  goPaperDo(e) {
+    let id = e.currentTarget.dataset.id
+    wx.navigateTo({ url: '/pages/exam/do/index?id=' + id })
+  },
   indexLoad: function() {
     let _this = this
     app.formPost('/api/wx/student/dashboard/index', null).then(res => {

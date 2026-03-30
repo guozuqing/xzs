@@ -1,6 +1,6 @@
 // base color
-$blue:#324157;
-$light-blue:#3A71A8;
+$blue:#4A90E2;
+$light-blue:#5ba3f0;
 $red:#C03639;
 $pink: #E65D6E;
 $green: #30B08F;
@@ -8,16 +8,16 @@ $tiffany: #4AB7BD;
 $yellow:#FEC171;
 $panGreen: #30B08F;
 
-// sidebar
-$menuText:#bfcbd9;
-$menuActiveText:#409EFF;
-$subMenuActiveText:#f4f4f5; // https://github.com/ElemeFE/element/issues/12951
+// sidebar - light theme
+$menuText:#5a6a85;
+$menuActiveText:#4A90E2;
+$subMenuActiveText:#1a2840;
 
-$menuBg:#304156;
-$menuHover:#263445;
+$menuBg:#fff;
+$menuHover:#f0f4ff;
 
-$subMenuBg:#1f2d3d;
-$subMenuHover:#001528;
+$subMenuBg:#f7f9fc;
+$subMenuHover:#e8f0fe;
 
 $sideBarWidth: 210px;
 

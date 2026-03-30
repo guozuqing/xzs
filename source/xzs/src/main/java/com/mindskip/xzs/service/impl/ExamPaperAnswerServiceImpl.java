@@ -78,6 +78,9 @@ public class ExamPaperAnswerServiceImpl extends BaseServiceImpl<ExamPaperAnswer>
         List<ExamPaperTitleItemObject> examPaperTitleItemObjects = JsonUtil.toJsonListObject(frameTextContent, ExamPaperTitleItemObject.class);
         List<Integer> questionIds = examPaperTitleItemObjects.stream().flatMap(t -> t.getQuestionItems().stream().map(q -> q.getId())).collect(Collectors.toList());
         List<Question> questions = questionMapper.selectByIds(questionIds);
+        // 每题分值从试卷总分和题目数量计算得出
+        Integer scorePerQuestion = (examPaper.getQuestionCount() != null && examPaper.getQuestionCount() > 0)
+                ? examPaper.getScore() / examPaper.getQuestionCount() : 0;
         //将题目结构的转化为题目答案
         List<ExamPaperQuestionCustomerAnswer> examPaperQuestionCustomerAnswers = examPaperTitleItemObjects.stream()
                 .flatMap(t -> t.getQuestionItems().stream()
@@ -87,7 +90,7 @@ public class ExamPaperAnswerServiceImpl extends BaseServiceImpl<ExamPaperAnswer>
                                     .filter(tq -> tq.getQuestionId().equals(q.getId()))
                                     .findFirst()
                                     .orElse(null);
-                            return ExamPaperQuestionCustomerAnswerFromVM(question, customerQuestionAnswer, examPaper, q.getItemOrder(), user, now);
+                            return ExamPaperQuestionCustomerAnswerFromVM(question, customerQuestionAnswer, examPaper, q.getItemOrder(), user, now, scorePerQuestion);
                         })
                 ).collect(Collectors.toList());
 
@@ -189,11 +192,11 @@ public class ExamPaperAnswerServiceImpl extends BaseServiceImpl<ExamPaperAnswer>
      * @param now now
      * @return ExamPaperQuestionCustomerAnswer
      */
-    private ExamPaperQuestionCustomerAnswer ExamPaperQuestionCustomerAnswerFromVM(Question question, ExamPaperSubmitItemVM customerQuestionAnswer, ExamPaper examPaper, Integer itemOrder, User user, Date now) {
+    private ExamPaperQuestionCustomerAnswer ExamPaperQuestionCustomerAnswerFromVM(Question question, ExamPaperSubmitItemVM customerQuestionAnswer, ExamPaper examPaper, Integer itemOrder, User user, Date now, Integer scorePerQuestion) {
         ExamPaperQuestionCustomerAnswer examPaperQuestionCustomerAnswer = new ExamPaperQuestionCustomerAnswer();
         examPaperQuestionCustomerAnswer.setQuestionId(question.getId());
         examPaperQuestionCustomerAnswer.setExamPaperId(examPaper.getId());
-        examPaperQuestionCustomerAnswer.setQuestionScore(question.getScore());
+        examPaperQuestionCustomerAnswer.setQuestionScore(scorePerQuestion);
         examPaperQuestionCustomerAnswer.setSubjectId(examPaper.getSubjectId());
         examPaperQuestionCustomerAnswer.setItemOrder(itemOrder);
         examPaperQuestionCustomerAnswer.setCreateTime(now);
@@ -203,7 +206,7 @@ public class ExamPaperAnswerServiceImpl extends BaseServiceImpl<ExamPaperAnswer>
         if (null == customerQuestionAnswer) {
             examPaperQuestionCustomerAnswer.setCustomerScore(0);
         } else {
-            setSpecialFromVM(examPaperQuestionCustomerAnswer, question, customerQuestionAnswer);
+            setSpecialFromVM(examPaperQuestionCustomerAnswer, question, customerQuestionAnswer, scorePerQuestion);
         }
         return examPaperQuestionCustomerAnswer;
     }
@@ -214,20 +217,20 @@ public class ExamPaperAnswerServiceImpl extends BaseServiceImpl<ExamPaperAnswer>
      * @param question  question
      * @param customerQuestionAnswer customerQuestionAnswer
      */
-    private void setSpecialFromVM(ExamPaperQuestionCustomerAnswer examPaperQuestionCustomerAnswer, Question question, ExamPaperSubmitItemVM customerQuestionAnswer) {
+    private void setSpecialFromVM(ExamPaperQuestionCustomerAnswer examPaperQuestionCustomerAnswer, Question question, ExamPaperSubmitItemVM customerQuestionAnswer, Integer scorePerQuestion) {
         QuestionTypeEnum questionTypeEnum = QuestionTypeEnum.fromCode(examPaperQuestionCustomerAnswer.getQuestionType());
         switch (questionTypeEnum) {
             case SingleChoice:
             case TrueFalse:
                 examPaperQuestionCustomerAnswer.setAnswer(customerQuestionAnswer.getContent());
                 examPaperQuestionCustomerAnswer.setDoRight(question.getCorrect().equals(customerQuestionAnswer.getContent()));
-                examPaperQuestionCustomerAnswer.setCustomerScore(examPaperQuestionCustomerAnswer.getDoRight() ? question.getScore() : 0);
+                examPaperQuestionCustomerAnswer.setCustomerScore(examPaperQuestionCustomerAnswer.getDoRight() ? scorePerQuestion : 0);
                 break;
             case MultipleChoice:
                 String customerAnswer = ExamUtil.contentToString(customerQuestionAnswer.getContentArray());
                 examPaperQuestionCustomerAnswer.setAnswer(customerAnswer);
                 examPaperQuestionCustomerAnswer.setDoRight(customerAnswer.equals(question.getCorrect()));
-                examPaperQuestionCustomerAnswer.setCustomerScore(examPaperQuestionCustomerAnswer.getDoRight() ? question.getScore() : 0);
+                examPaperQuestionCustomerAnswer.setCustomerScore(examPaperQuestionCustomerAnswer.getDoRight() ? scorePerQuestion : 0);
                 break;
             case GapFilling:
                 String correctAnswer = JsonUtil.toJsonStr(customerQuestionAnswer.getContentArray());

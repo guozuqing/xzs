@@ -3,17 +3,16 @@ package com.mindskip.xzs.controller.student;
 import com.mindskip.xzs.base.BaseApiController;
 import com.mindskip.xzs.base.RestResponse;
 import com.mindskip.xzs.domain.ExamPaperQuestionCustomerAnswer;
+import com.mindskip.xzs.domain.Question;
 import com.mindskip.xzs.domain.Subject;
 import com.mindskip.xzs.domain.TextContent;
+import com.mindskip.xzs.domain.enums.QuestionTypeEnum;
 import com.mindskip.xzs.domain.question.QuestionObject;
 import com.mindskip.xzs.service.ExamPaperQuestionCustomerAnswerService;
 import com.mindskip.xzs.service.QuestionService;
 import com.mindskip.xzs.service.SubjectService;
 import com.mindskip.xzs.service.TextContentService;
-import com.mindskip.xzs.utility.DateTimeUtil;
-import com.mindskip.xzs.utility.HtmlUtil;
-import com.mindskip.xzs.utility.JsonUtil;
-import com.mindskip.xzs.utility.PageInfoHelper;
+import com.mindskip.xzs.utility.*;
 import com.mindskip.xzs.viewmodel.admin.question.QuestionEditRequestVM;
 import com.mindskip.xzs.viewmodel.student.exam.ExamPaperSubmitItemVM;
 import com.mindskip.xzs.viewmodel.student.question.answer.QuestionAnswerVM;
@@ -22,6 +21,8 @@ import com.mindskip.xzs.viewmodel.student.question.answer.QuestionPageStudentRes
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 @RestController("StudentQuestionAnswerController")
 @RequestMapping(value = "/api/student/question/answer")
@@ -68,6 +69,86 @@ public class QuestionAnswerController extends BaseApiController {
         vm.setQuestionVM(questionVM);
         vm.setQuestionAnswerVM(questionAnswerVM);
         return RestResponse.ok(vm);
+    }
+
+    @RequestMapping(value = "/wrongExam", method = RequestMethod.POST)
+    public RestResponse wrongExam() {
+        Integer userId = getCurrentUser().getId();
+        List<ExamPaperQuestionCustomerAnswer> wrongList = examPaperQuestionCustomerAnswerService.selectAllWrongByUser(userId);
+        if (wrongList == null || wrongList.isEmpty()) {
+            return RestResponse.fail(2, "暂无错题");
+        }
+        List<Map<String, Object>> questions = new ArrayList<>();
+        int order = 1;
+        for (ExamPaperQuestionCustomerAnswer qa : wrongList) {
+            QuestionEditRequestVM questionVM = questionService.getQuestionEditRequestVM(qa.getQuestionId());
+            if (questionVM == null) continue;
+            Map<String, Object> item = new HashMap<>();
+            item.put("wrongAnswerId", qa.getId());
+            item.put("questionId", qa.getQuestionId());
+            item.put("questionType", questionVM.getQuestionType());
+            item.put("title", questionVM.getTitle());
+            item.put("items", questionVM.getItems());
+            item.put("score", questionVM.getScore());
+            item.put("correct", questionVM.getCorrect());
+            item.put("correctArray", questionVM.getCorrectArray());
+            item.put("analyze", questionVM.getAnalyze());
+            item.put("questionScore", qa.getQuestionScore());
+            item.put("itemOrder", order++);
+            questions.add(item);
+        }
+        return RestResponse.ok(questions);
+    }
+
+    @RequestMapping(value = "/wrongExam/submit", method = RequestMethod.POST)
+    public RestResponse wrongExamSubmit(@RequestBody List<Map<String, Object>> answerItems) {
+        int correctCount = 0;
+        int totalCount = answerItems.size();
+        for (Map<String, Object> answerItem : answerItems) {
+            Integer wrongAnswerId = (Integer) answerItem.get("wrongAnswerId");
+            Integer questionId = (Integer) answerItem.get("questionId");
+            String content = (String) answerItem.get("content");
+            List<String> contentArray = (List<String>) answerItem.get("contentArray");
+
+            QuestionEditRequestVM questionVM = questionService.getQuestionEditRequestVM(questionId);
+            if (questionVM == null) continue;
+
+            boolean isRight = false;
+            QuestionTypeEnum questionType = QuestionTypeEnum.fromCode(questionVM.getQuestionType());
+            switch (questionType) {
+                case SingleChoice:
+                case TrueFalse:
+                    isRight = questionVM.getCorrect() != null && questionVM.getCorrect().equals(content);
+                    break;
+                case MultipleChoice:
+                    if (contentArray != null) {
+                        String customerAnswer = ExamUtil.contentToString(contentArray);
+                        isRight = customerAnswer.equals(questionVM.getCorrect());
+                    }
+                    break;
+                case GapFilling:
+                    if (contentArray != null && questionVM.getCorrectArray() != null) {
+                        isRight = contentArray.equals(questionVM.getCorrectArray());
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            if (isRight) {
+                ExamPaperQuestionCustomerAnswer qa = examPaperQuestionCustomerAnswerService.selectById(wrongAnswerId);
+                if (qa != null) {
+                    examPaperQuestionCustomerAnswerService.updateDoRightById(wrongAnswerId, true, qa.getQuestionScore());
+                }
+                correctCount++;
+            }
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("total", totalCount);
+        result.put("correct", correctCount);
+        result.put("wrong", totalCount - correctCount);
+        return RestResponse.ok(result);
     }
 
 }

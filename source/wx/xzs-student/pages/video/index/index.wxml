@@ -1,0 +1,36 @@
+<!--pages/video/index/index.wxml-->
+<view class="video-index-page">
+  <!-- 学科筛选 -->
+  <scroll-view scroll-x class="subject-filter" wx:if="{{subjectList.length > 0}}">
+    <view class="subject-tag {{currentSubjectId == null ? 'subject-tag-active' : ''}}" bindtap="onSubjectTap" data-id="{{null}}">全部</view>
+    <view class="subject-tag {{currentSubjectId == item.id ? 'subject-tag-active' : ''}}" wx:for="{{subjectList}}" wx:key="id" bindtap="onSubjectTap" data-id="{{item.id}}">{{item.name}}</view>
+  </scroll-view>
+
+  <!-- 视频列表 -->
+  <view class="video-list-wrap">
+    <view class="video-card" wx:for="{{videoList}}" wx:key="id" bindtap="goVideoDetail" data-id="{{item.id}}">
+      <view class="video-card-cover">
+        <image wx:if="{{item.coverUrl}}" src="{{item.coverUrl}}" class="video-cover-img" mode="aspectFill" />
+        <view wx:else class="video-cover-placeholder">
+          <text class="video-cover-icon">▶</text>
+        </view>
+        <view class="video-play-mask">
+          <text class="video-play-btn">▶</text>
+        </view>
+      </view>
+      <view class="video-card-body">
+        <text class="video-card-name">{{item.name}}</text>
+        <text class="video-card-subject" wx:if="{{item.subjectName}}">{{item.subjectName}}</text>
+        <text class="video-card-desc" wx:if="{{item.description}}">{{item.description}}</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!spinShow && videoList.length === 0}}">
+      暂无视频课程
+    </view>
+  </view>
+
+  <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
+  <i-message id="message" />
+</view>

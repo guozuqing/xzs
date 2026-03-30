@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mindskip.xzs.repository.VideoChapterMapper">
+  <resultMap id="BaseResultMap" type="com.mindskip.xzs.domain.VideoChapter">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="video_id" jdbcType="INTEGER" property="videoId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="video_url" jdbcType="VARCHAR" property="videoUrl" />
+    <result column="duration" jdbcType="INTEGER" property="duration" />
+    <result column="item_order" jdbcType="INTEGER" property="itemOrder" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, video_id, title, video_url, duration, item_order, create_time, deleted
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_video_chapter
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_video_chapter
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mindskip.xzs.domain.VideoChapter" useGeneratedKeys="true" keyProperty="id">
+    insert into t_video_chapter (video_id, title, video_url,
+      duration, item_order, create_time, deleted)
+    values (#{videoId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{videoUrl,jdbcType=VARCHAR},
+      #{duration,jdbcType=INTEGER}, #{itemOrder,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.mindskip.xzs.domain.VideoChapter" useGeneratedKeys="true" keyProperty="id">
+    insert into t_video_chapter
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="videoId != null">video_id,</if>
+      <if test="title != null">title,</if>
+      <if test="videoUrl != null">video_url,</if>
+      <if test="duration != null">duration,</if>
+      <if test="itemOrder != null">item_order,</if>
+      <if test="createTime != null">create_time,</if>
+      <if test="deleted != null">deleted,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="videoId != null">#{videoId,jdbcType=INTEGER},</if>
+      <if test="title != null">#{title,jdbcType=VARCHAR},</if>
+      <if test="videoUrl != null">#{videoUrl,jdbcType=VARCHAR},</if>
+      <if test="duration != null">#{duration,jdbcType=INTEGER},</if>
+      <if test="itemOrder != null">#{itemOrder,jdbcType=INTEGER},</if>
+      <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+      <if test="deleted != null">#{deleted,jdbcType=BIT},</if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mindskip.xzs.domain.VideoChapter">
+    update t_video_chapter
+    <set>
+      <if test="videoId != null">video_id = #{videoId,jdbcType=INTEGER},</if>
+      <if test="title != null">title = #{title,jdbcType=VARCHAR},</if>
+      <if test="videoUrl != null">video_url = #{videoUrl,jdbcType=VARCHAR},</if>
+      <if test="duration != null">duration = #{duration,jdbcType=INTEGER},</if>
+      <if test="itemOrder != null">item_order = #{itemOrder,jdbcType=INTEGER},</if>
+      <if test="deleted != null">deleted = #{deleted,jdbcType=BIT},</if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mindskip.xzs.domain.VideoChapter">
+    update t_video_chapter
+    set video_id = #{videoId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      video_url = #{videoUrl,jdbcType=VARCHAR},
+      duration = #{duration,jdbcType=INTEGER},
+      item_order = #{itemOrder,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getChaptersByVideoId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from t_video_chapter where deleted='f' and video_id= #{videoId}
+    order by item_order, id
+  </select>
+
+  <update id="deleteByVideoId" parameterType="java.lang.Integer">
+    update t_video_chapter set deleted = true where video_id = #{videoId,jdbcType=INTEGER}
+  </update>
+
+</mapper>

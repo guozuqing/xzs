@@ -89,6 +89,16 @@ public class ExamPaperQuestionCustomerAnswerServiceImpl extends BaseServiceImpl<
         return examPaperQuestionCustomerAnswerMapper.updateScore(examPaperAnswerUpdates);
     }
 
+    @Override
+    public List<ExamPaperQuestionCustomerAnswer> selectAllWrongByUser(Integer createUser) {
+        return examPaperQuestionCustomerAnswerMapper.selectAllWrongByUser(createUser);
+    }
+
+    @Override
+    public int updateDoRightById(Integer id, Boolean doRight, Integer customerScore) {
+        return examPaperQuestionCustomerAnswerMapper.updateDoRightById(id, doRight, customerScore);
+    }
+
     private void setSpecialToVM(ExamPaperSubmitItemVM examPaperSubmitItemVM, ExamPaperQuestionCustomerAnswer examPaperQuestionCustomerAnswer) {
         QuestionTypeEnum questionTypeEnum = QuestionTypeEnum.fromCode(examPaperQuestionCustomerAnswer.getQuestionType());
         switch (questionTypeEnum) {

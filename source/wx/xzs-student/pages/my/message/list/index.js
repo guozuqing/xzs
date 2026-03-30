@@ -17,6 +17,10 @@ Page({
     });
     this.search(true);
   },
+  goDetail(e) {
+    let id = e.currentTarget.dataset.id
+    wx.navigateTo({ url: '/pages/my/message/info/index?id=' + id })
+  },
   onPullDownRefresh() {
     this.setData({
       spinShow: true

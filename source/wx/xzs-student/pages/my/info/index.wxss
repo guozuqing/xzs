@@ -1,18 +1,69 @@
-.my-info-sex {
-  height: 45px;
-  font-size: 13px;
+/* pages/my/info/index.wxss */
+
+.info-page {
+  padding-bottom: 40rpx;
 }
 
-.my-info-sex-item {
-  line-height: 45px;
-  margin-left: 20px;
+.info-form {
+  padding: 8rpx 24rpx;
 }
 
-.my-info-level {
-  font-size: 13px;
+.info-field {
+  padding: 24rpx 8rpx;
 }
 
-.my-info-level-item {
-  line-height: 45px;
-  margin-left: 25px;
+.info-field-label {
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 12rpx;
+  display: block;
+}
+
+.info-field-input {
+  height: 72rpx;
+  font-size: 30rpx;
+  color: #333;
+  padding: 0 4rpx;
+}
+
+.info-divider {
+  height: 1rpx;
+  background: #f0f0f0;
+  margin: 0 8rpx;
+}
+
+.info-radio-group {
+  display: flex;
+  align-items: center;
+  padding-top: 8rpx;
+}
+
+.info-radio-item {
+  display: flex;
+  align-items: center;
+  margin-right: 40rpx;
+}
+
+.info-radio-text {
+  font-size: 30rpx;
+  color: #333;
+  margin-left: 8rpx;
+}
+
+.info-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72rpx;
+  padding: 0 4rpx;
+}
+
+.info-picker-text {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.info-picker-arrow {
+  color: #ccc;
+  font-size: 28rpx;
 }

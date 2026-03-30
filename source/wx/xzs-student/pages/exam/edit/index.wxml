@@ -1,2 +1,91 @@
 <!--pages/exam/edit/index.wxml-->
-<text>pages/exam/edit/index.wxml</text>
+<wxs module="filter" src="../../../wxs/exam-fun.wxs"></wxs>
+<view class="edit-page">
+  <!-- 成绩概览 -->
+  <view class="edit-summary">
+    <view class="edit-summary-bg"></view>
+    <view class="edit-summary-card">
+      <text class="edit-paper-name">{{paper.name}}</text>
+      <text class="edit-hint">请对简答题进行批改评分</text>
+    </view>
+  </view>
+
+  <form bindsubmit='formSubmit'>
+    <!-- 题目分组 -->
+    <view class="question-section" wx:for="{{paper.titleItems}}" wx:for-item="titleItem" wx:key="{{titleItem.name}}">
+      <view class="question-section-header">
+        <view class="question-section-bar"></view>
+        <text class="question-section-title">{{titleItem.name}}</text>
+      </view>
+
+      <view class="question-card" wx:for="{{titleItem.questionItems}}" wx:key="{{titleItem.id}}" wx:for-item="questionItem">
+        <!-- 题目标题 -->
+        <view class="question-title-wrap">
+          <text class="question-order">{{questionItem.itemOrder}}</text>
+          <rich-text nodes="{{questionItem.title}}" class="question-title-text" />
+        </view>
+
+        <!-- 单选/多选/判断 - 只读展示 -->
+        <view wx:if="{{questionItem.questionType === 1 || questionItem.questionType === 3}}">
+          <radio-group>
+            <label wx:for="{{questionItem.items}}" wx:key="{{questionItem.prefix}}" wx:for-item="radioItem" class="option-item {{radioItem.prefix == answer.answerItems[questionItem.itemOrder-1].content ? 'option-selected' : ''}}">
+              <radio color="#2c5f8a" value="{{radioItem.prefix}}" checked="{{radioItem.prefix == answer.answerItems[questionItem.itemOrder-1].content}}" disabled class="option-radio" />
+              <text class="option-prefix" wx:if="{{questionItem.questionType === 1}}">{{radioItem.prefix}}.</text>
+              <rich-text nodes="{{questionItem.questionType === 1 ? radioItem.content : radioItem.content}}" class="option-content" />
+            </label>
+          </radio-group>
+        </view>
+        <view wx:elif="{{questionItem.questionType === 2}}">
+          <checkbox-group>
+            <label wx:for="{{questionItem.items}}" wx:key="{{questionItem.prefix}}" wx:for-item="radioItem" class="option-item {{filter.indexOf(answer.answerItems[questionItem.itemOrder-1].content,radioItem.prefix) ? 'option-selected' : ''}}">
+              <checkbox color="#2c5f8a" value="{{radioItem.prefix}}" checked="{{filter.indexOf(answer.answerItems[questionItem.itemOrder-1].content,radioItem.prefix)}}" disabled class="option-radio" />
+              <text class="option-prefix">{{radioItem.prefix}}.</text>
+              <rich-text nodes="{{radioItem.content}}" class="option-content" />
+            </label>
+          </checkbox-group>
+        </view>
+        <!-- 填空题 -->
+        <view wx:elif="{{questionItem.questionType === 4}}">
+          <view class="fill-blank-item" wx:for="{{questionItem.items}}" wx:key="{{questionItem.prefix}}" wx:for-item="inputItem">
+            <text class="fill-blank-label">{{inputItem.prefix}}</text>
+            <input class="fill-blank-input" maxlength="-1" value="{{answer.contentArray[inputItem.prefix-1]}}" disabled />
+          </view>
+        </view>
+        <!-- 简答题 - 可批改 -->
+        <view wx:else>
+          <view class="short-answer-wrap">
+            <textarea class="short-answer-input" maxlength="-1" disabled>{{answer.answerItems[questionItem.itemOrder-1].content}}</textarea>
+          </view>
+        </view>
+
+        <!-- 答题信息 -->
+        <view class="answer-result-area">
+          <view class="answer-result-header">
+            <text class="answer-result-tag tag-success" wx:if="{{answer.answerItems[questionItem.itemOrder-1].doRight==true}}">正确</text>
+            <text class="answer-result-tag tag-danger" wx:elif="{{answer.answerItems[questionItem.itemOrder-1].doRight==false}}">错误</text>
+            <text class="answer-result-tag tag-warning" wx:elif="{{answer.answerItems[questionItem.itemOrder-1].doRight===null}}">待批改</text>
+          </view>
+          <view class="answer-detail-row">
+            <text class="answer-detail-label">正确答案</text>
+            <rich-text nodes="{{questionItem.correct}}" class="answer-detail-value answer-correct-text" wx:if="{{questionItem.questionType==1||questionItem.questionType==2||questionItem.questionType==5}}" />
+            <rich-text nodes="{{filter.trueFalseFormatter(questionItem)}}" class="answer-detail-value answer-correct-text" wx:elif="{{questionItem.questionType==3}}" />
+            <rich-text nodes="{{questionItem.correctArray}}" class="answer-detail-value answer-correct-text" wx:elif="{{questionItem.questionType==4}}" />
+          </view>
+          <!-- 批改输入 (仅简答题) -->
+          <view class="edit-score-row" wx:if="{{questionItem.questionType === 5}}">
+            <text class="edit-score-label">评分 (满分{{questionItem.score}})</text>
+            <input class="edit-score-input" type="digit" maxlength="5" name="{{questionItem.itemOrder}}_score" value="{{answer.answerItems[questionItem.itemOrder-1].score}}" placeholder="请输入分数" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="submit-wrap">
+      <button class="btn-primary" form-type='submit'>提交批改</button>
+    </view>
+  </form>
+
+  <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
+  <i-message id="message" />
+</view>

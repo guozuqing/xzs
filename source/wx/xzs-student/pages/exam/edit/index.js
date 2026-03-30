@@ -1,66 +1,71 @@
 // pages/exam/edit/index.js
+const app = getApp()
+
 Page({
-
-  /**
-   * Page initial data
-   */
   data: {
-
+    spinShow: false,
+    paper: {},
+    answer: {}
   },
 
-  /**
-   * Lifecycle function--Called when page load
-   */
-  onLoad: function (options) {
+  onLoad: function(options) {
+    let _this = this
+    let id = options.id
+    _this.setData({ spinShow: true })
 
+    app.formPost('/api/wx/student/exampaper/answer/read/' + id, null).then(res => {
+      if (res.code === 1) {
+        _this.setData({
+          answer: res.response,
+          spinShow: false
+        })
+        app.formPost('/api/wx/student/exampaper/read/' + res.response.examPaperId, null).then(paperRes => {
+          if (paperRes.code === 1) {
+            _this.setData({
+              paper: paperRes.response
+            })
+          }
+        })
+      } else {
+        _this.setData({ spinShow: false })
+        app.message(res.message, 'error')
+      }
+    }).catch(e => {
+      _this.setData({ spinShow: false })
+      app.message(e, 'error')
+    })
   },
 
-  /**
-   * Lifecycle function--Called when page is initially rendered
-   */
-  onReady: function () {
+  formSubmit(e) {
+    let _this = this
+    let formData = e.detail.value
+    let answer = _this.data.answer
+    let answerItems = answer.answerItems
 
-  },
+    answerItems.forEach(item => {
+      let scoreKey = item.itemOrder + '_score'
+      if (formData[scoreKey] !== undefined && formData[scoreKey] !== '') {
+        item.score = parseFloat(formData[scoreKey])
+        item.doRight = item.score > 0
+      }
+    })
 
-  /**
-   * Lifecycle function--Called when page show
-   */
-  onShow: function () {
+    answer.answerItems = answerItems
+    _this.setData({ spinShow: true })
 
-  },
-
-  /**
-   * Lifecycle function--Called when page hide
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * Lifecycle function--Called when page unload
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * Page event handler function--Called when user drop down
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * Called when page reach bottom
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * Called when user click on the top right corner to share
-   */
-  onShareAppMessage: function () {
-
+    app.formPost('/api/wx/student/exampaper/answer/edit', answer).then(res => {
+      _this.setData({ spinShow: false })
+      if (res.code === 1) {
+        app.message('批改提交成功', 'success')
+        setTimeout(() => {
+          wx.navigateBack()
+        }, 1500)
+      } else {
+        app.message(res.message, 'error')
+      }
+    }).catch(e => {
+      _this.setData({ spinShow: false })
+      app.message(e, 'error')
+    })
   }
 })

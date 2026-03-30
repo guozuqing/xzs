@@ -1,58 +1,64 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <img src="@/assets/logo2.png" alt="banner" class="banner-bg" />
+    <div class="login-overlay">
+      <div class="login-form-wrap">
+        <div class="title-container">
+          <div class="logo-icon">
+            <img src="@/assets/sky-logo.png" alt="天空领域" class="logo-img" />
+          </div>
+          <p class="subtitle">培训发展部管理系统</p>
+        </div>
 
-      <div class="title-container">
-        <h3 class="title">天空领域-培训发展部管理系统</h3>
+        <el-form ref="loginForm" :model="loginForm" :rules="loginRules" auto-complete="on" label-position="left">
+          <el-form-item prop="userName">
+            <span class="svg-container">
+              <svg-icon icon-class="user" />
+            </span>
+            <el-input
+              ref="userName"
+              v-model="loginForm.userName"
+              placeholder="请输入用户名"
+              name="userName"
+              type="text"
+              tabindex="1"
+              auto-complete="on"
+            />
+          </el-form-item>
+
+          <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
+            <el-form-item prop="password">
+              <span class="svg-container">
+                <svg-icon icon-class="password" />
+              </span>
+              <el-input
+                :key="passwordType"
+                ref="password"
+                v-model="loginForm.password"
+                :type="passwordType"
+                placeholder="请输入密码"
+                name="password"
+                tabindex="2"
+                auto-complete="on"
+                @keyup.native="checkCapslock"
+                @blur="capsTooltip = false"
+                @keyup.enter.native="handleLogin"
+              />
+              <span class="show-pwd" @click="showPwd">
+                <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+              </span>
+            </el-form-item>
+          </el-tooltip>
+
+          <el-button :loading="loading" type="primary" class="login-btn" @click.native.prevent="handleLogin">
+            {{ loading ? '登录中...' : '登 录' }}
+          </el-button>
+        </el-form>
+
+        <div class="login-copyright">
+          <span>Copyright © 2019-2026 天空领域培训发展部 版权所有</span>
+        </div>
       </div>
-
-      <el-form-item prop="userName">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="userName"
-          v-model="loginForm.userName"
-          placeholder="用户名"
-          name="userName"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
-      </el-form-item>
-
-      <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
-        <el-form-item prop="password">
-          <span class="svg-container">
-            <svg-icon icon-class="password" />
-          </span>
-          <el-input
-            :key="passwordType"
-            ref="password"
-            v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="密码"
-            name="password"
-            tabindex="2"
-            auto-complete="on"
-            @keyup.native="checkCapslock"
-            @blur="capsTooltip = false"
-            @keyup.enter.native="handleLogin"
-          />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-          </span>
-        </el-form-item>
-      </el-tooltip>
-
-      <el-checkbox v-model="loginForm.remember" style="margin-bottom: 20px;margin-left: 5px;">记住密码</el-checkbox>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
-
-    </el-form>
-
-    <div class="account-foot-copyright">
-      <span>Copyright © 2019-2026 天空领域培训发展部 版权所有</span>
     </div>
   </div>
 </template>
@@ -82,7 +88,7 @@ export default {
       loginForm: {
         userName: '',
         password: '',
-        remember: false
+        remember: true
       },
       loginRules: {
         userName: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -90,12 +96,8 @@ export default {
       },
       passwordType: 'password',
       capsTooltip: false,
-      loading: false,
-      showDialog: false
+      loading: false
     }
-  },
-  created () {
-    // window.addEventListener('storage', this.afterQRScan)
   },
   mounted () {
     if (this.loginForm.userName === '') {
@@ -103,9 +105,6 @@ export default {
     } else if (this.loginForm.password === '') {
       this.$refs.password.focus()
     }
-  },
-  destroyed () {
-    // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
     checkCapslock ({ shiftKey, key } = {}) {
@@ -147,7 +146,7 @@ export default {
                 type: 'error'
               })
             }
-          }).catch(function (reason) {
+          }).catch(function () {
             _this.loading = false
           })
         } else {
@@ -161,125 +160,181 @@ export default {
 </script>
 
 <style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
+/* 覆盖 element-ui 输入框样式，适配浅色主题 */
+.login-container .el-input {
+  display: inline-block;
+  height: 52px;
+  width: 85%;
 
-$bg:#283443;
-$light_gray:#fff;
-$cursor: #fff;
+  input {
+    background: transparent;
+    border: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 0;
+    padding: 14px 5px 14px 15px;
+    color: #333;
+    height: 52px;
+    font-size: 16px;
+    caret-color: #4A90E2;
 
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
+    &::placeholder {
+      color: #aab0b8;
+      font-size: 15px;
+    }
+
+    &:-webkit-autofill {
+      box-shadow: 0 0 0px 1000px #fff inset !important;
+      -webkit-text-fill-color: #333 !important;
+    }
   }
 }
 
-/* reset element-ui css */
-.login-container {
-  .el-input {
-    display: inline-block;
-    height: 47px;
-    width: 85%;
+.login-container .el-form-item {
+  border: 1px solid #e0e6ed;
+  background: #fff;
+  border-radius: 8px;
+  color: #333;
+  margin-bottom: 24px;
+  transition: border-color 0.3s;
 
-    input {
-      background: transparent;
-      border: 0px;
-      -webkit-appearance: none;
-      border-radius: 0px;
-      padding: 12px 5px 12px 15px;
-      color: $light_gray;
-      height: 47px;
-      caret-color: $cursor;
-
-      &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
-      }
-    }
+  &:focus-within {
+    border-color: #4A90E2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.12);
   }
+}
 
-  .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    color: #454545;
-  }
+.login-container .el-form-item__error {
+  padding-left: 50px;
 }
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
-
 .login-container {
-  min-height: 100%;
+  position: relative;
+  height: 100vh;
   width: 100%;
-  background-color: $bg;
   overflow: hidden;
+}
 
-  .login-form {
-    position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding:30px 50px 10px 50px;
-    margin:120px auto auto auto;
-    overflow: hidden;
-    background: rgba(252, 254, 255, 0.11)
-  }
+.banner-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
 
-  .tips {
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 10px;
+.login-overlay {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 40px 120px 40px 40px;
+}
 
-    span {
-      &:first-of-type {
-        margin-right: 16px;
-      }
+.login-form-wrap {
+  width: 500px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+  padding: 52px 44px 48px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.title-container {
+  text-align: center;
+  margin-bottom: 36px;
+
+  .logo-icon {
+    margin-bottom: 16px;
+
+    .logo-img {
+      height: 60px;
+      object-fit: contain;
     }
   }
 
-  .svg-container {
-    padding: 6px 5px 6px 15px;
-    color: $dark_gray;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
-  }
-
-  .title-container {
-    position: relative;
-
-    .title {
-      font-size: 26px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
-      text-align: center;
-      font-weight: bold;
-    }
-  }
-
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
+  .subtitle {
     font-size: 16px;
-    color: $dark_gray;
-    cursor: pointer;
-    user-select: none;
+    color: #8a9bb0;
+    margin: 0;
+    letter-spacing: 2px;
+  }
+}
+
+.svg-container {
+  padding: 6px 5px 6px 15px;
+  color: #aab0b8;
+  vertical-align: middle;
+  width: 34px;
+  font-size: 18px;
+  display: inline-block;
+  transition: color 0.2s;
+}
+
+.show-pwd {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #aab0b8;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #4A90E2;
+  }
+}
+
+.login-btn {
+  width: 100%;
+  height: 52px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  border-radius: 8px;
+  margin-top: 8px;
+  background: linear-gradient(90deg, #4A90E2 0%, #5ba3f0 100%);
+  border: none;
+  box-shadow: 0 4px 16px rgba(74, 144, 226, 0.35);
+  transition: all 0.3s;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.45);
   }
 
-  .thirdparty-button {
-    position: absolute;
-    right: 0;
-    bottom: 6px;
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.login-copyright {
+  margin-top: 32px;
+  text-align: center;
+  font-size: 13px;
+  color: #9aaec4;
+  white-space: nowrap;
+}
+
+@media only screen and (max-width: 768px) {
+  .login-overlay {
+    justify-content: center;
+    padding: 24px;
   }
 
-  @media only screen and (max-width: 470px) {
-    .thirdparty-button {
-      display: none;
-    }
+  .login-form-wrap {
+    width: 100%;
+    max-width: 500px;
   }
 }
 </style>

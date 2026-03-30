@@ -1,15 +1,29 @@
 <!--pages/exam/index/index.wxml-->
-<view>
-	<i-tabs current="{{ paperType }}" bindchange="tabChange" fixed="true">
-		<i-tab key="1" title="固定试卷" />
-		<i-tab key="4" title="时段试卷" />
-	</i-tabs>
-	<view class="exam-tab-view">
-		<i-cell-group>
-			<i-cell wx:for="{{tableData}}" data-item="item" wx:key="{{item.id}}" title="{{item.name}}" is-link url="/pages/exam/do/index?id={{item.id}}" value="{{item.subjectName}}"></i-cell>
-		</i-cell-group>
+<view class="exam-index-page">
+	<!-- 试卷列表 -->
+	<view class="exam-list-wrap">
+		<view class="exam-card" wx:for="{{examConfigList}}" wx:key="examName" bindtap="goGeneratePaper" data-item="{{item}}">
+			<view class="exam-card-left">
+				<view class="exam-card-icon">
+					<text class="exam-card-icon-text">{{item.examName[0] || '卷'}}</text>
+				</view>
+			</view>
+			<view class="exam-card-body">
+				<text class="exam-card-name">{{item.examName}}</text>
+				<text class="exam-card-subject">{{item.questionCount}}题 / {{item.totalScore}}分 / {{item.suggestTime}}分钟</text>
+				<text class="exam-card-subject" wx:if="{{item.lastScore}}">上次: {{item.lastScore}}分 {{item.lastResult}} ({{item.lastTime}})</text>
+			</view>
+			<view class="exam-card-right">
+				<text class="exam-card-btn">开始答题</text>
+			</view>
+		</view>
+
+		<!-- 空状态 -->
+		<view class="empty-state" wx:if="{{!spinShow && examConfigList.length === 0}}">
+			暂无试卷
+		</view>
 	</view>
-	<i-load-more tip="{{loadMoreTip}}" loading="{{loadMoreLoad}}" i-class="xzs-load-more" />
+
 	<i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
 	<i-message id="message" />
 </view>

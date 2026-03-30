@@ -1,23 +1,57 @@
 <wxs module="enumItem" src="../../wxs/enumItem.wxs"></wxs>
-<view>
-  <view>
-    <swiper indicator-dots="false" autoplay="true" interval="5000" duration="1000">
+<view class="index-page">
+  <!-- 顶部横幅 -->
+  <view class="index-banner">
+    <swiper indicator-dots="{{true}}" indicator-color="rgba(255,255,255,0.4)" indicator-active-color="#fff" autoplay="true" interval="5000" duration="800" circular="true" class="index-swiper">
       <swiper-item>
-        <image src="/assets/carousel/1.png" class="slide-image" />
+        <image src="/assets/carousel/1.png" class="slide-image" mode="aspectFill" />
       </swiper-item>
       <swiper-item>
-        <image src="/assets/carousel/2.png" class="slide-image" />
+        <image src="/assets/carousel/2.png" class="slide-image" mode="aspectFill" />
       </swiper-item>
       <swiper-item>
-        <image src="/assets/carousel/3.png" class="slide-image" />
+        <image src="/assets/carousel/3.png" class="slide-image" mode="aspectFill" />
       </swiper-item>
       <swiper-item>
-        <image src="/assets/carousel/4.png" class="slide-image" />
+        <image src="/assets/carousel/4.png" class="slide-image" mode="aspectFill" />
       </swiper-item>
     </swiper>
   </view>
 
-  <i-panel title="任务中心">
+  <!-- 快捷功能入口 -->
+  <view class="quick-nav card">
+    <view class="quick-nav-item" bindtap="goExam">
+      <view class="quick-nav-icon" style="background:linear-gradient(135deg,#4A90E2,#357ABD)">
+        <text class="nav-icon-text">卷</text>
+      </view>
+      <text class="quick-nav-label">试卷中心</text>
+    </view>
+    <view class="quick-nav-item" bindtap="goRecord">
+      <view class="quick-nav-icon" style="background:linear-gradient(135deg,#52c4bf,#36b3ad)">
+        <text class="nav-icon-text">录</text>
+      </view>
+      <text class="quick-nav-label">考试记录</text>
+    </view>
+    <view class="quick-nav-item" bindtap="goVideo">
+      <view class="quick-nav-icon" style="background:linear-gradient(135deg,#e6a23c,#d4912e)">
+        <text class="nav-icon-text">学</text>
+      </view>
+      <text class="quick-nav-label">视频教学</text>
+    </view>
+    <view class="quick-nav-item" bindtap="goMy">
+      <view class="quick-nav-icon" style="background:linear-gradient(135deg,#7c5cbf,#6a4eaa)">
+        <text class="nav-icon-text">我</text>
+      </view>
+      <text class="quick-nav-label">个人中心</text>
+    </view>
+  </view>
+
+  <!-- 任务中心 -->
+  <view class="card" wx:if="{{taskList.length > 0}}">
+    <view class="section-header">
+      <view class="section-title-bar"></view>
+      <text class="section-title">任务中心</text>
+    </view>
     <i-collapse accordion i-class="index-collapse">
       <i-collapse-item i-class="index-collapse-item" title="{{item.title}}" name="{{item.id}}" wx:for="{{taskList}}" data-item="item" wx:key="{{item.id}}">
         <i-cell-group slot="content">
@@ -26,18 +60,52 @@
         </i-cell-group>
       </i-collapse-item>
     </i-collapse>
-  </i-panel>
+  </view>
 
-  <i-panel title="固定试卷">
-    <i-cell-group>
-      <i-cell wx:for="{{fixedPaper}}" data-item="item" wx:key="{{item.id}}" title="{{item.name}}" is-link url="/pages/exam/do/index?id={{item.id}}"></i-cell>
-    </i-cell-group>
-  </i-panel>
-  <i-panel title="时段试卷">
-    <i-cell-group>
-      <i-cell wx:for="{{timeLimitPaper}}" data-item="item" wx:key="{{item.id}}" title="{{item.name}}" is-link url="/pages/exam/do/index?id={{item.id}}" label="{{item.startTime}} 至 {{item.endTime}}"></i-cell>
-    </i-cell-group>
-  </i-panel>
+  <!-- 固定试卷 -->
+  <view class="card" wx:if="{{fixedPaper.length > 0}}">
+    <view class="section-header">
+      <view class="section-title-bar"></view>
+      <text class="section-title">固定试卷</text>
+      <text class="section-count">共{{fixedPaper.length}}套</text>
+    </view>
+    <view class="paper-list">
+      <view class="paper-item" wx:for="{{fixedPaper}}" wx:key="{{item.id}}" bindtap="goPaperDo" data-id="{{item.id}}">
+        <view class="paper-item-left">
+          <view class="paper-type-dot" style="background:#4A90E2"></view>
+          <text class="paper-item-name">{{item.name}}</text>
+        </view>
+        <text class="paper-item-arrow">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 时段试卷 -->
+  <view class="card" wx:if="{{timeLimitPaper.length > 0}}">
+    <view class="section-header">
+      <view class="section-title-bar" style="background:#e6a23c"></view>
+      <text class="section-title">时段试卷</text>
+      <text class="section-count">共{{timeLimitPaper.length}}套</text>
+    </view>
+    <view class="paper-list">
+      <view class="paper-item" wx:for="{{timeLimitPaper}}" wx:key="{{item.id}}" bindtap="goPaperDo" data-id="{{item.id}}">
+        <view class="paper-item-left">
+          <view class="paper-type-dot" style="background:#e6a23c"></view>
+          <view class="paper-item-info">
+            <text class="paper-item-name">{{item.name}}</text>
+            <text class="paper-item-time">{{item.startTime}} 至 {{item.endTime}}</text>
+          </view>
+        </view>
+        <text class="paper-item-arrow">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="card" wx:if="{{!spinShow && fixedPaper.length === 0 && timeLimitPaper.length === 0 && taskList.length === 0}}">
+    <view class="empty-state">暂无考试安排</view>
+  </view>
+
   <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
   <i-message id="message" />
 </view>

@@ -18,6 +18,15 @@ Page({
     });
     this.search(true)
   },
+  goRead(e) {
+    let id = e.currentTarget.dataset.id
+    let status = e.currentTarget.dataset.status
+    if (status === 1) {
+      wx.navigateTo({ url: '/pages/exam/edit/index?id=' + id })
+    } else {
+      wx.navigateTo({ url: '/pages/exam/read/index?id=' + id })
+    }
+  },
   onPullDownRefresh() {
     this.setData({
       spinShow: true

@@ -59,6 +59,12 @@ const constantRoutes = [
         hidden: true
       },
       {
+        path: 'class/list',
+        component: () => import('@/views/user/class/list'),
+        name: 'ClassPageList',
+        meta: { title: '班级管理', noCache: true }
+      },
+      {
         path: 'admin/list',
         component: () => import('@/views/user/admin/list'),
         name: 'UserAdminPageList',
@@ -135,6 +141,13 @@ const constantRoutes = [
         name: 'shortAnswerPage',
         meta: { title: '简答题编辑', noCache: true, activeMenu: '/exam/question/list' },
         hidden: true
+      },
+      {
+        path: 'question/import',
+        component: () => import('@/views/exam/question/import'),
+        name: 'QuestionImportPage',
+        meta: { title: '导入试题', noCache: true, activeMenu: '/exam/question/list' },
+        hidden: true
       }
     ]
   },
@@ -183,6 +196,31 @@ const constantRoutes = [
         component: () => import('@/views/education/subject/edit'),
         name: 'EducationSubjectEditPage',
         meta: { title: '学科编辑', noCache: true, activeMenu: '/education/subject/list' },
+        hidden: true
+      }
+    ]
+  },
+  {
+    path: '/video',
+    component: Layout,
+    name: 'VideoPage',
+    meta: {
+      title: '视频教学',
+      icon: 'education'
+    },
+    alwaysShow: true,
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/video/list'),
+        name: 'VideoListPage',
+        meta: { title: '视频列表', noCache: true }
+      },
+      {
+        path: 'edit',
+        component: () => import('@/views/video/edit'),
+        name: 'VideoEditPage',
+        meta: { title: '视频编辑', noCache: true, activeMenu: '/video/list' },
         hidden: true
       }
     ]

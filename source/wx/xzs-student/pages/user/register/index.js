@@ -3,6 +3,9 @@ Page({
   data: {
     levelIndex: 0
   },
+  goLogin() {
+    wx.navigateBack()
+  },
   bindLevelChange: function (e) {
     this.setData({
       levelIndex: e.detail.value

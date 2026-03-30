@@ -1,26 +1,48 @@
 <wxs module="enumItem" src="../../../wxs/enumItem.wxs"></wxs>
-<view class="card-image-container">
-  <image src="/assets/logo2.png" style="width:175px;height:147px"></image>
-</view>
-
-<form bindsubmit='formSubmit'>
-  <i-panel title="用户名">
-    <i-input value="{{ userName }}" name="userName" maxlength="-1" />
-  </i-panel>
-
-  <i-panel title="密码">
-    <i-input value="{{ password }}" name="password" maxlength="-1" />
-  </i-panel>
-  <i-panel title="年级">
-    <picker mode="selector" range="{{ enumItem.state.user.levelEnum }}" range-key="{{'value'}}" value="{{levelIndex}}" bindchange="bindLevelChange">
-      <view class="i-cell i-input exam-pick-input">{{ enumItem.state.user.levelEnum[levelIndex].value }}</view>
-      <i-input value="{{enumItem.state.user.levelEnum[levelIndex].key}}" maxlength="-1" name="userLevel" class="exam-hidden" />
-    </picker>
-  </i-panel>
-  <view>
-    <button class="i-btn i-btn- i-btn-primary i-btn-square" form-type='submit'>注册</button>
+<view class="register-page">
+  <!-- 顶部banner -->
+  <view class="register-banner">
+    <image src="/assets/banner-bg.png" class="register-banner-img" mode="aspectFill"></image>
+    <view class="register-banner-overlay"></view>
   </view>
-  <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
-</form>
 
-<i-message id="message" />
+  <!-- 表单卡片 -->
+  <view class="register-card-wrap">
+    <view class="register-card">
+      <image src="/assets/sky-logo.png" class="register-logo" mode="aspectFit"></image>
+      <text class="register-subtitle">注册新账号</text>
+
+      <form bindsubmit='formSubmit'>
+        <view class="register-field">
+          <view class="register-field-icon"><text class="field-icon-text">👤</text></view>
+          <input class="register-field-input" name="userName" value="{{userName}}" placeholder="请输入用户名" maxlength="-1" />
+        </view>
+
+        <view class="register-field">
+          <view class="register-field-icon"><text class="field-icon-text">🔒</text></view>
+          <input class="register-field-input" name="password" value="{{password}}" placeholder="请输入密码" password="true" maxlength="-1" />
+        </view>
+
+        <view class="register-field">
+          <view class="register-field-icon"><text class="field-icon-text">🎓</text></view>
+          <picker mode="selector" range="{{ enumItem.state.user.levelEnum }}" range-key="{{'value'}}" value="{{levelIndex}}" bindchange="bindLevelChange" class="register-picker-wrap">
+            <view class="register-picker-inner">
+              <text class="register-picker-text">{{ enumItem.state.user.levelEnum[levelIndex].value }}</text>
+              <text class="register-picker-arrow">›</text>
+            </view>
+            <input value="{{enumItem.state.user.levelEnum[levelIndex].key}}" maxlength="-1" name="userLevel" class="exam-hidden" />
+          </picker>
+        </view>
+
+        <button class="register-btn" form-type='submit'>注 册</button>
+      </form>
+
+      <view class="register-footer">
+        <text class="register-footer-text">已有账号? <text bindtap="goLogin" class="register-login-link">去登录</text></text>
+      </view>
+    </view>
+  </view>
+
+  <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
+  <i-message id="message" />
+</view>

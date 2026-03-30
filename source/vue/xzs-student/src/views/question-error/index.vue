@@ -5,7 +5,10 @@
         <el-card shadow="hover" class="error-table-card">
           <div slot="header" class="error-card-header">
             <span class="error-card-title">错题本</span>
-            <span class="error-card-total">共 {{total}} 道错题</span>
+            <div class="error-card-actions">
+              <span class="error-card-total">共 {{total}} 道错题</span>
+              <el-button type="primary" size="small" icon="el-icon-edit-outline" @click="startWrongExam" :disabled="total === 0">错题考试</el-button>
+            </div>
           </div>
           <el-table v-loading="listLoading" :data="tableData" fit highlight-current-row style="width: 100%"
                     @row-click="itemSelect" :row-class-name="tableRowClassName" size="medium">
@@ -93,6 +96,9 @@ export default {
     questionTypeFormatter (row, column, cellValue, index) {
       return this.enumFormat(this.questionTypeEnum, cellValue)
     },
+    startWrongExam () {
+      this.$router.push('/question/wrongExam')
+    },
     tableRowClassName ({ row }) {
       if (this.selectItem && this.selectItem.id === row.id) {
         return 'error-row-active'
@@ -111,11 +117,13 @@ export default {
 
 <style lang="scss" scoped>
 .error-page {
-  padding-top: 20px;
+  min-height: calc(100vh - 61px);
 }
 
-.error-table-card {
+.error-table-card, .error-detail-card {
   border-radius: 8px;
+  border: 1px solid #e4e7ed;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 }
 
 .error-card-header {
@@ -125,19 +133,20 @@ export default {
 }
 
 .error-card-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  color: #303133;
+  color: #2c5f8a;
+}
+
+.error-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .error-card-total {
   font-size: 13px;
-  color: #909399;
-}
-
-.error-detail-card {
-  border-radius: 8px;
-  margin-top: 0;
+  color: #999;
 }
 
 .error-answer-content {
@@ -146,6 +155,10 @@ export default {
 }
 </style>
 <style lang="scss">
+.error-page.app-contain {
+  padding: 24px !important;
+  background: #f0f2f5 !important;
+}
 .error-row-active td {
   background-color: #ecf5ff !important;
 }

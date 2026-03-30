@@ -4,7 +4,11 @@
 @import '/component/iView/input/index.wxss';
 
 page {
-  background: #f7f7f7;
+  background: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #333;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .container {
@@ -17,21 +21,91 @@ page {
   box-sizing: border-box;
 }
 
-.student-page {
-  background: white;
+/* 通用卡片 */
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin: 16rpx 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
 }
 
-.student-page button {
-  height: 30px;
-  line-height: 30px;
-  margin-top: 7px;
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  margin-bottom: 20rpx;
+}
+
+/* 通用按钮 */
+.btn-primary {
+  background: #4A90E2 !important;
+  color: #fff;
+  border: none;
+  border-radius: 16rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+  height: 88rpx;
+  line-height: 88rpx;
+  letter-spacing: 4rpx;
+  margin: 24rpx 24rpx;
+}
+
+.btn-primary::after {
+  border: none;
+}
+
+/* 标签 */
+.tag {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: 6rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.tag-success {
+  background: #f0f9eb;
+  color: #52c41a;
+}
+
+.tag-warning {
+  background: #fffbe6;
+  color: #faad14;
+}
+
+.tag-danger {
+  background: #fff2f0;
+  color: #ff4d4f;
+}
+
+.tag-info {
+  background: #f5f5f5;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 80rpx 0;
+  color: #bbb;
+  font-size: 28rpx;
+}
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+  background: #f0f0f0;
+  margin: 20rpx 0;
 }
 
 .gapfilling-span {
-  color: red;
+  color: #f56c6c;
   padding: 0px 30px;
   margin: 0px 5px;
-  border-bottom: 3px double red;
+  border-bottom: 3px double #f56c6c;
 }
 
 .ueditor-p {
@@ -42,6 +116,31 @@ page {
   display: none;
 }
 
-.exam-pick-input{
+.exam-pick-input {
   height: 30px;
+}
+
+/* 列表项 */
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 30rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-item:active {
+  background: #fafafa;
+}
+
+/* 加载更多 */
+.load-more-wrap {
+  text-align: center;
+  padding: 30rpx 0;
+  color: #bbb;
+  font-size: 24rpx;
 }

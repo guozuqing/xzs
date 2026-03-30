@@ -24,4 +24,8 @@ public interface ExamPaperQuestionCustomerAnswerMapper extends BaseMapper<ExamPa
     List<KeyValue> selectCountByDate(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
     int updateScore(List<ExamPaperAnswerUpdate> examPaperAnswerUpdates);
+
+    List<ExamPaperQuestionCustomerAnswer> selectAllWrongByUser(@Param("createUser") Integer createUser);
+
+    int updateDoRightById(@Param("id") Integer id, @Param("doRight") Boolean doRight, @Param("customerScore") Integer customerScore);
 }

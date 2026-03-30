@@ -1,54 +1,46 @@
 <template>
   <div class="dashboard-container">
-    <el-row :gutter="40" class="panel-group">
+    <el-row :gutter="24" class="panel-group">
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div class="card-panel">
-          <div class="card-panel-icon-wrapper icon-people">
+        <div class="card-panel card-exam">
+          <div class="card-panel-icon-wrapper">
             <svg-icon icon-class="exam" class-name="card-panel-icon"/>
           </div>
           <div class="card-panel-description">
-            <div class="card-panel-text">
-              试卷总数
-            </div>
+            <div class="card-panel-text">试卷总数</div>
             <count-to :start-val="0" :end-val="examPaperCount" :duration="2600" class="card-panel-num" v-loading="loading"/>
           </div>
         </div>
       </el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div class="card-panel" >
-          <div class="card-panel-icon-wrapper icon-message">
+        <div class="card-panel card-question">
+          <div class="card-panel-icon-wrapper">
             <svg-icon icon-class="question" class-name="card-panel-icon"/>
           </div>
           <div class="card-panel-description">
-            <div class="card-panel-text">
-              题目总数
-            </div>
+            <div class="card-panel-text">题目总数</div>
             <count-to :start-val="0" :end-val="questionCount" :duration="3000" class="card-panel-num" v-loading="loading"/>
           </div>
         </div>
       </el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div class="card-panel">
-          <div class="card-panel-icon-wrapper icon-shopping">
+        <div class="card-panel card-answer">
+          <div class="card-panel-icon-wrapper">
             <svg-icon icon-class="doexampaper" class-name="card-panel-icon"/>
           </div>
           <div class="card-panel-description">
-            <div class="card-panel-text">
-              答卷总数
-            </div>
+            <div class="card-panel-text">答卷总数</div>
             <count-to :start-val="0" :end-val="doExamPaperCount" :duration="3600" class="card-panel-num" v-loading="loading"/>
           </div>
         </div>
       </el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div class="card-panel">
-          <div class="card-panel-icon-wrapper icon-money">
+        <div class="card-panel card-do">
+          <div class="card-panel-icon-wrapper">
             <svg-icon icon-class="doquestion" class-name="card-panel-icon"/>
           </div>
           <div class="card-panel-description">
-            <div class="card-panel-text">
-              答题总数
-            </div>
+            <div class="card-panel-text">答题总数</div>
             <count-to :start-val="0" :end-val="doQuestionCount" :duration="3200" class="card-panel-num" v-loading="loading"/>
           </div>
         </div>
@@ -106,29 +98,55 @@ export default {
       return {
         title: {
           text: title,
-          x: 'center'
+          x: 'center',
+          textStyle: {
+            color: '#1a2840',
+            fontSize: 16,
+            fontWeight: 600
+          }
         },
         tooltip: {
           trigger: 'item',
-          formatter: formatter
+          formatter: formatter,
+          backgroundColor: '#fff',
+          borderColor: '#e0e6ed',
+          textStyle: { color: '#333' }
         },
         xAxis: {
           type: 'category',
-          data: label
+          data: label,
+          axisLine: { lineStyle: { color: '#dce3ec' } },
+          axisLabel: { color: '#7a8ba8' }
         },
         grid: {
           left: 10,
           right: 10,
           bottom: 20,
-          top: 30,
+          top: 40,
           containLabel: true
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          axisLine: { show: false },
+          splitLine: { lineStyle: { color: '#eef2f8' } },
+          axisLabel: { color: '#7a8ba8' }
         },
         series: [{
           data: vaule,
-          type: 'line'
+          type: 'line',
+          smooth: true,
+          lineStyle: { color: '#4A90E2', width: 2.5 },
+          itemStyle: { color: '#4A90E2' },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [
+                { offset: 0, color: 'rgba(74,144,226,0.18)' },
+                { offset: 1, color: 'rgba(74,144,226,0.02)' }
+              ]
+            }
+          }
         }]
       }
     }
@@ -137,161 +155,135 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.dashboard-container {
+  padding: 24px;
+  background: linear-gradient(135deg, #f0f4ff 0%, #f7f9fc 50%, #eef3fb 100%);
+  min-height: calc(100vh - 84px);
+}
 
-  .dashboard-container {
-    padding: 32px;
-    background-color: rgb(240, 242, 245);
-    position: relative;
+.panel-group {
+  margin-top: 0;
 
-    .chart-wrapper {
-      background: #fff;
-      padding: 16px 16px 0;
-      margin-bottom: 32px;
-    }
+  .card-panel-col {
+    margin-bottom: 24px;
   }
 
-  @media (max-width: 1024px) {
-    .chart-wrapper {
-      padding: 8px;
-    }
-  }
+  .card-panel {
+    display: flex;
+    align-items: center;
+    height: 110px;
+    padding: 0 24px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(74, 144, 226, 0.08);
+    border: 1px solid #eef2f8;
+    cursor: pointer;
+    transition: all 0.3s;
 
-  .dashboard-editor-container {
-    padding: 32px;
-    background-color: rgb(240, 242, 245);
-    position: relative;
-
-    .github-corner {
-      position: absolute;
-      top: 0px;
-      border: 0;
-      right: 0;
-    }
-
-    .chart-wrapper {
-      background: #fff;
-      padding: 16px 16px 0;
-      margin-bottom: 32px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    .chart-wrapper {
-      padding: 8px;
-    }
-  }
-
-  .panel-group {
-    margin-top: 18px;
-
-    .card-panel-col {
-      margin-bottom: 32px;
-    }
-
-    .card-panel {
-      height: 108px;
-      cursor: pointer;
-      font-size: 12px;
-      position: relative;
-      overflow: hidden;
-      color: #666;
-      background: #fff;
-      box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-      border-color: rgba(0, 0, 0, .05);
-
-      &:hover {
-        .card-panel-icon-wrapper {
-          color: #fff;
-        }
-
-        .icon-people {
-          background: #40c9c6;
-        }
-
-        .icon-message {
-          background: #36a3f7;
-        }
-
-        .icon-money {
-          background: #f4516c;
-        }
-
-        .icon-shopping {
-          background: #34bfa3
-        }
-      }
-
-      .icon-people {
-        color: #40c9c6;
-      }
-
-      .icon-message {
-        color: #36a3f7;
-      }
-
-      .icon-money {
-        color: #f4516c;
-      }
-
-      .icon-shopping {
-        color: #34bfa3
-      }
-
-      .card-panel-icon-wrapper {
-        float: left;
-        margin: 14px 0 0 14px;
-        padding: 16px;
-        transition: all 0.38s ease-out;
-        border-radius: 6px;
-      }
-
-      .card-panel-icon {
-        float: left;
-        font-size: 48px;
-      }
-
-      .card-panel-description {
-        float: right;
-        font-weight: bold;
-        margin: 26px;
-        margin-left: 0px;
-
-        .card-panel-text {
-          line-height: 18px;
-          color: rgba(0, 0, 0, 0.45);
-          font-size: 16px;
-          margin-bottom: 12px;
-        }
-
-        .card-panel-num {
-          font-size: 20px;
-        }
-      }
-    }
-  }
-
-  @media (max-width: 550px) {
-    .card-panel-description {
-      display: none;
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 24px rgba(74, 144, 226, 0.15);
     }
 
     .card-panel-icon-wrapper {
-      float: none !important;
-      width: 100%;
-      height: 100%;
-      margin: 0 !important;
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
 
-      .svg-icon {
-        display: block;
-        margin: 14px auto !important;
-        float: none !important;
+    .card-panel-icon {
+      font-size: 32px;
+    }
+
+    .card-panel-description {
+      margin-left: 20px;
+      flex: 1;
+
+      .card-panel-text {
+        font-size: 14px;
+        color: #7a8ba8;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .card-panel-num {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a2840;
       }
     }
   }
 
-  .echarts-line{
-    background:#fff;
-    padding:16px 16px 0;
-    margin-bottom:32px;
+  .card-exam {
+    .card-panel-icon-wrapper {
+      background: rgba(74, 144, 226, 0.1);
+      color: #4A90E2;
+    }
+    &:hover .card-panel-icon-wrapper {
+      background: #4A90E2;
+      color: #fff;
+    }
   }
+
+  .card-question {
+    .card-panel-icon-wrapper {
+      background: rgba(82, 196, 191, 0.1);
+      color: #52c4bf;
+    }
+    &:hover .card-panel-icon-wrapper {
+      background: #52c4bf;
+      color: #fff;
+    }
+  }
+
+  .card-answer {
+    .card-panel-icon-wrapper {
+      background: rgba(245, 166, 35, 0.1);
+      color: #f5a623;
+    }
+    &:hover .card-panel-icon-wrapper {
+      background: #f5a623;
+      color: #fff;
+    }
+  }
+
+  .card-do {
+    .card-panel-icon-wrapper {
+      background: rgba(126, 113, 242, 0.1);
+      color: #7e71f2;
+    }
+    &:hover .card-panel-icon-wrapper {
+      background: #7e71f2;
+      color: #fff;
+    }
+  }
+}
+
+.echarts-line {
+  background: #fff;
+  padding: 24px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(74, 144, 226, 0.08);
+  border: 1px solid #eef2f8;
+}
+
+@media (max-width: 550px) {
+  .card-panel-description {
+    display: none;
+  }
+
+  .card-panel-icon-wrapper {
+    margin: 0 auto;
+  }
+
+  .card-panel {
+    justify-content: center;
+  }
+}
 </style>

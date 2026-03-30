@@ -1,17 +1,157 @@
 /* pages/user/register/index.wxss */
 
-.card-image-container {
-  align-items: center;
+.register-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+/* 顶部banner */
+.register-banner {
+  position: relative;
+  width: 100%;
+  height: 420rpx;
+  overflow: hidden;
+}
+
+.register-banner-img {
+  width: 100%;
+  height: 100%;
+}
+
+.register-banner-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 180rpx;
+  background: linear-gradient(to bottom, transparent, rgba(245, 245, 245, 0.5) 50%, #f5f5f5 100%);
+}
+
+/* 表单卡片 */
+.register-card-wrap {
+  position: relative;
+  margin-top: -100rpx;
+  padding: 0 56rpx;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 600rpx;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 32rpx;
+  padding: 48rpx 44rpx 40rpx;
+  box-shadow: 0 8rpx 60rpx rgba(0, 0, 0, 0.08), 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register-logo {
+  width: 300rpx;
+  height: 64rpx;
+  margin-bottom: 12rpx;
+}
+
+.register-subtitle {
+  font-size: 24rpx;
+  color: #a0aec0;
+  letter-spacing: 3rpx;
+  margin-bottom: 40rpx;
+}
+
+/* 输入框 */
+.register-field {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 92rpx;
+  background: #f7f8fc;
+  border: 2rpx solid #eff1f5;
+  border-radius: 14rpx;
+  margin-bottom: 24rpx;
+  padding: 0 24rpx;
+  box-sizing: border-box;
+}
+
+.register-field-icon {
+  width: 48rpx;
+  display: flex;
+  align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  margin-right: 4rpx;
 }
 
-
-.register-level {
-  font-size: 13px;
+.field-icon-text {
+  font-size: 28rpx;
+  opacity: 0.6;
 }
 
-.register-level-item {
-  line-height: 45px;
-  margin-left: 25px;
+.register-field-input {
+  flex: 1;
+  height: 92rpx;
+  font-size: 28rpx;
+  color: #2d3748;
+  padding-left: 4rpx;
+}
+
+.register-picker-wrap {
+  flex: 1;
+}
+
+.register-picker-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 92rpx;
+}
+
+.register-picker-text {
+  font-size: 28rpx;
+  color: #2d3748;
+}
+
+.register-picker-arrow {
+  color: #ccc;
+  font-size: 32rpx;
+}
+
+/* 注册按钮 */
+.register-btn {
+  width: 100% !important;
+  height: 92rpx;
+  line-height: 92rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: 8rpx;
+  border-radius: 14rpx;
+  margin-top: 16rpx;
+  background: linear-gradient(135deg, #4A90E2 0%, #5ba3f0 100%) !important;
+  color: #fff !important;
+  border: none;
+  box-shadow: 0 6rpx 24rpx rgba(74, 144, 226, 0.3);
+}
+
+.register-btn::after {
+  border: none;
+}
+
+/* 底部 */
+.register-footer {
+  margin-top: 28rpx;
+  text-align: center;
+}
+
+.register-footer-text {
+  font-size: 24rpx;
+  color: #a0aec0;
+}
+
+.register-login-link {
+  color: #4A90E2;
+  font-weight: 600;
 }

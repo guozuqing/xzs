@@ -1,18 +1,26 @@
-<view class="user-log-page">
-  <view wx:for="{{logList}}" data-item="item" wx:key="{{item.id}}" class="i-step-item i-step-process i-step-vertical" style="width : 100%;">
-    <view class="i-step-item-ico">
-      <view class="i-step-ico"></view>
-      <view class="i-step-line" wx:if="{{ index !== len - 1 }}"></view>
-    </view>
-    <view class="i-step-item-main">
-      <view class="i-step-item-title">
-        {{item.createTime}}
-      </view>
-      <view class="i-step-item-content">
-        {{item.content}}
-      </view>
-    </view>
-    <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
-    <i-message id="message" />
+<view class="log-page">
+  <view class="card log-header-card">
+    <text class="log-header-title">个人动态</text>
+    <text class="log-header-count">共 {{logList.length}} 条记录</text>
   </view>
+
+  <view class="log-timeline" wx:if="{{logList.length > 0}}">
+    <view class="log-item" wx:for="{{logList}}" wx:key="{{item.id}}">
+      <view class="log-dot-wrap">
+        <view class="log-dot"></view>
+        <view class="log-line" wx:if="{{index !== logList.length - 1}}"></view>
+      </view>
+      <view class="log-content-card">
+        <text class="log-time">{{item.createTime}}</text>
+        <text class="log-text">{{item.content}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{!spinShow && logList.length === 0}}">
+    <view class="empty-state">暂无动态记录</view>
+  </view>
+
+  <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
+  <i-message id="message" />
 </view>

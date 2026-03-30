@@ -1,1 +1,269 @@
 /* pages/exam/edit/index.wxss */
+
+.edit-page {
+  background: #f5f5f5;
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+
+/* 成绩概览 */
+.edit-summary {
+  position: relative;
+  padding-bottom: 20rpx;
+}
+
+.edit-summary-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 160rpx;
+  background: #fff;
+  border-radius: 0 0 40rpx 40rpx;
+}
+
+.edit-summary-card {
+  position: relative;
+  margin: 24rpx;
+  margin-top: 20rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 36rpx 30rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.edit-paper-name {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.edit-hint {
+  font-size: 26rpx;
+  color: #e6a23c;
+}
+
+/* 复用 read 页面样式 */
+.question-section {
+  margin: 20rpx 24rpx;
+}
+
+.question-section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+  padding: 0 8rpx;
+}
+
+.question-section-bar {
+  width: 8rpx;
+  height: 32rpx;
+  background: #4A90E2;
+  border-radius: 4rpx;
+  margin-right: 16rpx;
+}
+
+.question-section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #4A90E2;
+}
+
+.question-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.question-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 24rpx;
+  line-height: 1.6;
+}
+
+.question-order {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44rpx;
+  height: 44rpx;
+  min-width: 44rpx;
+  background: #4A90E2;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 24rpx;
+  font-weight: 600;
+  margin-right: 16rpx;
+  margin-top: 4rpx;
+}
+
+.question-title-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.8;
+}
+
+.option-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 16rpx 20rpx;
+  margin-bottom: 8rpx;
+  border-radius: 12rpx;
+  background: #fafafa;
+}
+
+.option-selected {
+  background: #f5f5f5;
+  border-left: 6rpx solid #4A90E2;
+}
+
+.option-radio {
+  margin-right: 8rpx;
+  margin-top: 4rpx;
+}
+
+.option-prefix {
+  font-size: 28rpx;
+  color: #999;
+  margin-right: 8rpx;
+  font-weight: 500;
+}
+
+.option-content {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+}
+
+.fill-blank-item {
+  display: flex;
+  align-items: center;
+  margin: 12rpx 0;
+  border: 2rpx solid #f0f0f0;
+  border-radius: 12rpx;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.fill-blank-label {
+  padding: 0 24rpx;
+  color: #4A90E2;
+  font-weight: 600;
+  font-size: 28rpx;
+  background: #f5f5f5;
+  line-height: 80rpx;
+  min-width: 60rpx;
+  text-align: center;
+}
+
+.fill-blank-input {
+  flex: 1;
+  height: 80rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+}
+
+.short-answer-wrap {
+  margin-top: 8rpx;
+}
+
+.short-answer-input {
+  width: 100%;
+  min-height: 200rpx;
+  padding: 20rpx;
+  border: 2rpx solid #f0f0f0;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+
+/* 答题结果区域 */
+.answer-result-area {
+  margin-top: 24rpx;
+  padding-top: 24rpx;
+  border-top: 2rpx solid #f0f0f0;
+}
+
+.answer-result-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.answer-result-tag {
+  display: inline-block;
+  padding: 6rpx 20rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  margin-right: 16rpx;
+}
+
+.answer-detail-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 8rpx 0;
+}
+
+.answer-detail-label {
+  font-size: 26rpx;
+  color: #bbb;
+  min-width: 100rpx;
+  margin-right: 16rpx;
+}
+
+.answer-detail-value {
+  flex: 1;
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.6;
+}
+
+.answer-correct-text {
+  color: #67c23a;
+  font-weight: 600;
+}
+
+/* 批改评分 */
+.edit-score-row {
+  display: flex;
+  align-items: center;
+  margin-top: 16rpx;
+  padding: 16rpx 20rpx;
+  background: #fdf6ec;
+  border-radius: 12rpx;
+}
+
+.edit-score-label {
+  font-size: 26rpx;
+  color: #e6a23c;
+  font-weight: 600;
+  margin-right: 20rpx;
+  white-space: nowrap;
+}
+
+.edit-score-input {
+  flex: 1;
+  height: 64rpx;
+  background: #fff;
+  border: 2rpx solid #e6a23c;
+  border-radius: 8rpx;
+  padding: 0 16rpx;
+  font-size: 28rpx;
+  color: #333;
+  text-align: center;
+}
+
+/* 提交按钮 */
+.submit-wrap {
+  padding: 20rpx 0 40rpx;
+}

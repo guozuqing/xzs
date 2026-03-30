@@ -96,4 +96,10 @@ export default {
     width: 100%;
   }
 
+  .foot-copyright {
+    text-align: center;
+    padding: 16px 0;
+    font-size: 12px;
+    color: #9aaec4;
+  }
 </style>

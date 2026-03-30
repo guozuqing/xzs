@@ -19,6 +19,8 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
+    border-right: 1px solid #eef2f8;
+    box-shadow: 2px 0 8px rgba(74, 144, 226, 0.06);
 
     // reset element-ui css
     .horizontal-collapse-transition {
@@ -183,7 +185,6 @@
   .nest-menu .el-submenu>.el-submenu__title,
   .el-menu-item {
     &:hover {
-      // you can use $subMenuHover
       background-color: $menuHover !important;
     }
   }
@@ -194,7 +195,7 @@
     overflow-y: auto;
 
     &::-webkit-scrollbar-track-piece {
-      background: #d3dce6;
+      background: #f0f4ff;
     }
 
     &::-webkit-scrollbar {
@@ -202,7 +203,7 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #99a9bf;
+      background: #c0cfe0;
       border-radius: 20px;
     }
   }

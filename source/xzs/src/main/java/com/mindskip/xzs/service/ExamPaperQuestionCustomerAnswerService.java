@@ -35,4 +35,8 @@ public interface ExamPaperQuestionCustomerAnswerService extends BaseService<Exam
     List<Integer> selectMothCount();
 
     int updateScore(List<ExamPaperAnswerUpdate> examPaperAnswerUpdates);
+
+    List<ExamPaperQuestionCustomerAnswer> selectAllWrongByUser(Integer createUser);
+
+    int updateDoRightById(Integer id, Boolean doRight, Integer customerScore);
 }

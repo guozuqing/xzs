@@ -6,7 +6,6 @@ Vue.use(Router)
 const router = new Router({
   routes: [
     { path: '/login', name: 'Login', component: () => import('@/views/login/index'), meta: { title: '登录', bodyBackground: '#fbfbfb' } },
-    { path: '/register', name: 'Register', component: () => import('@/views/register/index'), meta: { title: '注册', bodyBackground: '#fbfbfb' } },
     {
       path: '/',
       component: Layout,
@@ -80,6 +79,20 @@ const router = new Router({
         }
       ]
     },
+    {
+      path: '/video',
+      component: Layout,
+      children: [
+        {
+          path: 'index',
+          component: () => import('@/views/video/index'),
+          name: 'VideoIndex',
+          meta: { title: '视频学习' }
+        }
+      ]
+    },
+    { path: '/video/play', name: 'VideoPlay', component: () => import('@/views/video/play'), meta: { title: '视频播放' } },
+    { path: '/question/wrongExam', name: 'WrongExam', component: () => import('@/views/question-error/wrongExam'), meta: { title: '错题考试' } },
     { path: '/do', name: 'ExamPaperDo', component: () => import('@/views/exam/paper/do'), meta: { title: '试卷答题' } },
     { path: '/edit', name: 'ExamPaperEdit', component: () => import('@/views/exam/paper/edit'), meta: { title: '试卷批改' } },
     { path: '/read', name: 'ExamPaperRead', component: () => import('@/views/exam/paper/read'), meta: { title: '试卷查看' } },

@@ -1,32 +1,115 @@
 /**index.wxss**/
 
-.userinfo {
+.my-page {
+  padding-bottom: 40rpx;
+}
+
+/* 头部 */
+.my-header {
+  position: relative;
+  height: 280rpx;
+}
+
+.my-header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200rpx;
+  background: #fff;
+}
+
+.my-user-info {
+  position: absolute;
+  bottom: 20rpx;
+  left: 32rpx;
+  right: 32rpx;
   display: flex;
-  flex-direction: row;
   align-items: center;
-  background: #598ce4;
-  height: 100px;
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
-.userinfo-avatar {
-  width: 48px;
-  height: 48px;
-  margin-left: 30px;
+.my-avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  margin-right: 24rpx;
+  background: #f0f0f0;
 }
 
-.userinfo-nickname {
-  color: white;
-  margin-left: 20px;
+.my-user-detail {
+  display: flex;
+  flex-direction: column;
 }
 
-
-.my-group-margin{
-  margin-top: 10px;
+.my-username {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6rpx;
 }
 
-.copyright{
-  color: #8c8c8c;
+.my-user-id {
+  font-size: 24rpx;
+  color: #bbb;
+}
+
+/* 菜单 */
+.my-menu {
+  padding: 8rpx 20rpx;
+}
+
+.my-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 8rpx;
+}
+
+.my-menu-item:active {
+  background: #fafafa;
+  border-radius: 12rpx;
+}
+
+.my-menu-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.my-menu-icon-text {
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.my-menu-title {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.my-menu-arrow {
+  color: #ddd;
+  font-size: 24rpx;
+}
+
+.my-menu-divider {
+  height: 1rpx;
+  background: #f5f5f5;
+  margin-left: 92rpx;
+}
+
+.copyright {
+  color: #ccc;
   text-align: center;
-  margin-top: 20px;
-  font-size: 14px;
+  margin-top: 40rpx;
+  font-size: 22rpx;
 }

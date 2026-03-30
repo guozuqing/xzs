@@ -1,19 +1,22 @@
-<view class="msg-page">
-  <view class="msg-title">
-    <h1>{{message.title}}</h1>
+<view class="msg-detail-page">
+  <view class="msg-detail-card card">
+    <text class="msg-detail-title">{{message.title}}</text>
+    <view class="msg-detail-meta">
+      <view class="msg-meta-row">
+        <text class="msg-meta-label">发送人</text>
+        <text class="msg-meta-value">{{message.sendUserName}}</text>
+      </view>
+      <view class="msg-meta-row">
+        <text class="msg-meta-label">发送时间</text>
+        <text class="msg-meta-value">{{message.createTime}}</text>
+      </view>
+    </view>
+    <view class="msg-detail-divider"></view>
+    <view class="msg-detail-body">
+      <text class="msg-detail-content">{{message.content}}</text>
+    </view>
   </view>
-  <view>
-    <view class="msg-content">
-      <h1>发送人：{{message.sendUserName}}</h1>
-    </view>
-    <view class="msg-content">
-      <h1>发送时间：{{message.createTime}}</h1>
-    </view>
-    <view class="msg-content">
-      <h1>发送内容：{{message.content}}</h1>
-    </view>
 
-    <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
-    <i-message id="message" />
-  </view>
+  <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
+  <i-message id="message" />
 </view>

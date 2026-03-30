@@ -1,0 +1,85 @@
+<!--pages/question/error/index.wxml-->
+<wxs module="enumItem" src="../../../wxs/enumItem.wxs"></wxs>
+<view class="error-page">
+  <!-- 顶部统计 -->
+  <view class="error-header">
+    <view class="error-header-bg"></view>
+    <view class="error-stats-card">
+      <text class="error-stats-title">错题本</text>
+      <text class="error-stats-count">共 {{total}} 道错题</text>
+    </view>
+  </view>
+
+  <!-- 错题列表 -->
+  <view class="error-list">
+    <view class="error-card" wx:for="{{tableData}}" wx:key="{{item.id}}" bindtap="showDetail" data-id="{{item.id}}">
+      <view class="error-card-header">
+        <text class="error-card-title">{{item.shortTitle}}</text>
+        <view class="tag tag-info">{{enumItem.format(enumItem.state.exam.question.typeEnum, item.questionType)}}</view>
+      </view>
+      <view class="error-card-body">
+        <view class="error-card-info">
+          <text class="error-card-label">学科：</text>
+          <text class="error-card-value">{{item.subjectName}}</text>
+        </view>
+        <view class="error-card-info">
+          <text class="error-card-label">做题时间：</text>
+          <text class="error-card-value">{{item.createTime}}</text>
+        </view>
+      </view>
+      <view class="error-card-footer">
+        <text class="error-card-action">查看详情 ></text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="card" wx:if="{{!spinShow && tableData.length === 0}}">
+      <view class="empty-state">暂无错题记录</view>
+    </view>
+  </view>
+
+  <i-load-more tip="{{loadMoreTip}}" loading="{{loadMoreLoad}}" />
+
+  <!-- 错题详情弹窗 -->
+  <view class="detail-mask" wx:if="{{showDetailModal}}" bindtap="closeDetail"></view>
+  <view class="detail-popup {{showDetailModal ? 'detail-popup-show' : ''}}">
+    <view class="detail-popup-header">
+      <text class="detail-popup-title">题目详情</text>
+      <text class="detail-popup-close" bindtap="closeDetail">×</text>
+    </view>
+    <scroll-view scroll-y class="detail-popup-body" wx:if="{{selectItem.questionItem}}">
+      <!-- 题目 -->
+      <view class="detail-question">
+        <rich-text nodes="{{selectItem.questionItem.title}}" />
+      </view>
+      <!-- 选项 -->
+      <view wx:if="{{selectItem.questionType === 1 || selectItem.questionType === 2 || selectItem.questionType === 3}}">
+        <view class="detail-option" wx:for="{{selectItem.questionItem.items}}" wx:key="prefix" wx:for-item="opt">
+          <text class="detail-option-prefix">{{opt.prefix}}.</text>
+          <rich-text nodes="{{opt.content}}" class="detail-option-content" />
+        </view>
+      </view>
+      <!-- 你的答案 -->
+      <view class="detail-section" wx:if="{{selectItem.answerItem}}">
+        <text class="detail-section-label">你的答案</text>
+        <text class="detail-section-value detail-answer-wrong">{{selectItem.answerItem.content || '未作答'}}</text>
+      </view>
+      <!-- 正确答案 -->
+      <view class="detail-section">
+        <text class="detail-section-label">正确答案</text>
+        <text class="detail-section-value detail-answer-correct">{{selectItem.questionItem.correct || '--'}}</text>
+      </view>
+      <!-- 解析 -->
+      <view class="detail-section" wx:if="{{selectItem.questionItem.analyze}}">
+        <text class="detail-section-label">解析</text>
+        <rich-text nodes="{{selectItem.questionItem.analyze}}" class="detail-section-value" />
+      </view>
+    </scroll-view>
+    <view class="detail-popup-body" wx:if="{{detailLoading}}">
+      <view class="empty-state">加载中...</view>
+    </view>
+  </view>
+
+  <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
+  <i-message id="message" />
+</view>

@@ -1,46 +1,64 @@
-<view class="userinfo">
-  <block>
-    <image class="userinfo-avatar" src="{{info.imagePath}}"></image>
-    <text class="userinfo-nickname">{{info.userName}}</text>
-  </block>
-</view>
-<view>
-  <i-cell-group i-class="my-group-margin">
-    <i-cell title="个人资料" is-link url="/pages/my/info/index">
-      <i-icon type="mine_fill" slot="icon" size="20" />
-    </i-cell>
-    <i-cell title="个人动态" is-link url="/pages/my/log/index">
-      <i-icon type="collection_fill" slot="icon" size="20" />
-    </i-cell>
-    <i-cell title="消息" is-link url="/pages/my/message/list/index">
-      <i-icon type="message_fill" slot="icon" size="20" />
-    </i-cell>
-  </i-cell-group>
-</view>
+<view class="my-page">
+  <!-- 用户信息头部 -->
+  <view class="my-header">
+    <view class="my-header-bg"></view>
+    <view class="my-user-info">
+      <image class="my-avatar" src="{{info.imagePath || '/assets/sky-logo.png'}}" mode="aspectFit"></image>
+      <view class="my-user-detail">
+        <text class="my-username">{{info.realName || info.userName || '用户'}}</text>
+        <text class="my-user-id">账号：{{info.userName || '--'}}</text>
+      </view>
+    </view>
+  </view>
 
-<view>
-  <i-cell-group i-class="my-group-margin">
-    <i-cell title="设置" is-link url="/pages/dashboard/index">
-      <i-icon type="setup_fill" slot="icon" size="20" />
-    </i-cell>
-    <i-cell title="反馈" is-link url="/pages/dashboard/index">
-      <i-icon type="praise_fill" slot="icon" size="20" />
-    </i-cell>
-    <i-cell title="关于" is-link url="/pages/dashboard/index">
-      <i-icon type="prompt_fill" slot="icon" size="20" />
-    </i-cell>
-  </i-cell-group>
+  <!-- 功能菜单 -->
+  <view class="my-menu card">
+    <view class="my-menu-item" bindtap="goPage" data-url="/pages/my/info/index">
+      <view class="my-menu-icon" style="background:linear-gradient(135deg,#4A90E2,#357ABD)">
+        <text class="my-menu-icon-text">资</text>
+      </view>
+      <text class="my-menu-title">个人资料</text>
+      <text class="my-menu-arrow">></text>
+    </view>
+    <view class="my-menu-divider"></view>
+    <view class="my-menu-item" bindtap="goPage" data-url="/pages/my/log/index">
+      <view class="my-menu-icon" style="background:linear-gradient(135deg,#52c4bf,#36b3ad)">
+        <text class="my-menu-icon-text">动</text>
+      </view>
+      <text class="my-menu-title">个人动态</text>
+      <text class="my-menu-arrow">></text>
+    </view>
+    <view class="my-menu-divider"></view>
+    <view class="my-menu-item" bindtap="goPage" data-url="/pages/my/message/list/index">
+      <view class="my-menu-icon" style="background:linear-gradient(135deg,#e6a23c,#d4912e)">
+        <text class="my-menu-icon-text">消</text>
+      </view>
+      <text class="my-menu-title">消息中心</text>
+      <text class="my-menu-arrow">></text>
+    </view>
+    <view class="my-menu-divider"></view>
+    <view class="my-menu-item" bindtap="goPage" data-url="/pages/question/error/index">
+      <view class="my-menu-icon" style="background:linear-gradient(135deg,#f56c6c,#e04b4b)">
+        <text class="my-menu-icon-text">错</text>
+      </view>
+      <text class="my-menu-title">错题本</text>
+      <text class="my-menu-arrow">></text>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="my-menu card">
+    <view class="my-menu-item" bindtap="logOut">
+      <view class="my-menu-icon" style="background:linear-gradient(135deg,#909399,#767a82)">
+        <text class="my-menu-icon-text">退</text>
+      </view>
+      <text class="my-menu-title">退出账号</text>
+      <text class="my-menu-arrow">></text>
+    </view>
+  </view>
+
+  <view class="copyright">天空领域培训发展部 提供技术支持</view>
+
+  <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
+  <i-message id="message" />
 </view>
-
-<view>
-  <i-cell-group i-class="my-group-margin">
-    <i-cell title="退出账号" bind:click="logOut">
-      <i-icon type="flashlight_fill" slot="icon" size="20" />
-    </i-cell>
-  </i-cell-group>
-</view>
-
-<view class="copyright">天空领域培训发展部 提供技术支持</view>
-
-<i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
-<i-message id="message" />

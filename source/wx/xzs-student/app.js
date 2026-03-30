@@ -5,7 +5,7 @@ const mtjwxsdk = require('./utils/mtj-wx-sdk.js');
 
 App({
   globalData: {
-    baseAPI: "http://localhost:8000",
+    baseAPI: "http://192.168.18.79:8000",
     pageSize: 20
   },
   onLaunch: function() {
@@ -13,6 +13,7 @@ App({
     let token = wx.getStorageSync('token')
     if (null == token || token == '') {
       wx.login({
+        timeout: 10000,
         success(wxres) {
           if (wxres.code) {
             _this.formPost('/api/wx/student/auth/checkBind', {
@@ -32,10 +33,22 @@ App({
               }
             }).catch(e => {
               _this.message(e, 'error')
+              wx.reLaunch({
+                url: '/pages/user/bind/index',
+              });
             })
           } else {
-            _this.message(res.errMsg, 'error')
+            _this.message(wxres.errMsg, 'error')
+            wx.reLaunch({
+              url: '/pages/user/bind/index',
+            });
           }
+        },
+        fail(err) {
+          console.warn('wx.login failed:', err)
+          wx.reLaunch({
+            url: '/pages/user/bind/index',
+          });
         }
       })
     }
@@ -45,6 +58,44 @@ App({
       content: content,
       type: type
     });
+  },
+  jsonPost: function(url, data) {
+    let _this = this
+    return new Promise(function(resolve, reject) {
+      wx.showNavigationBarLoading();
+      wx.request({
+        url: _this.globalData.baseAPI + url,
+        header: {
+          'content-type': 'application/json',
+          'token': wx.getStorageSync('token')
+        },
+        method: 'POST',
+        data,
+        success(res) {
+          if (res.statusCode !== 200 || typeof res.data !== 'object') {
+            reject('网络出错')
+            return false;
+          }
+          if (res.data.code === 401) {
+            wx.reLaunch({ url: '/pages/user/bind/index' });
+            return false;
+          } else if (res.data.code === 500 || res.data.code === 501) {
+            reject(res.data.message)
+            return false;
+          } else {
+            resolve(res.data);
+            return true;
+          }
+        },
+        fail(res) {
+          reject(res.errMsg)
+          return false;
+        },
+        complete(res) {
+          wx.hideNavigationBarLoading();
+        }
+      })
+    })
   },
   formPost: function(url, data) {
     let _this = this

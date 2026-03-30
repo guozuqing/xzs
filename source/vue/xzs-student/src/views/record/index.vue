@@ -10,7 +10,7 @@
           <el-table v-loading="listLoading" :data="tableData" fit highlight-current-row style="width: 100%"
                     @row-click="itemSelect" :row-class-name="tableRowClassName" size="medium">
             <el-table-column type="index" label="#" width="50px" align="center"/>
-            <el-table-column prop="paperName" label="试卷名称" min-width="160" show-overflow-tooltip/>
+            <el-table-column prop="paperName" label="试卷名称" show-overflow-tooltip/>
             <el-table-column prop="subjectName" label="学科" width="80" align="center"/>
             <el-table-column label="状态" prop="status" width="90" align="center">
               <template slot-scope="{row}">
@@ -165,11 +165,13 @@ export default {
 
 <style lang="scss" scoped>
 .record-page {
-  padding-top: 20px;
+  min-height: calc(100vh - 61px);
 }
 
 .record-table-card {
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 1px solid #eef2f8;
+  box-shadow: 0 2px 12px rgba(74, 144, 226, 0.08);
 }
 
 .record-card-header {
@@ -181,16 +183,18 @@ export default {
 .record-card-title {
   font-size: 16px;
   font-weight: 600;
-  color: #303133;
+  color: #1a2840;
 }
 
 .record-card-total {
   font-size: 13px;
-  color: #909399;
+  color: #7a8ba8;
 }
 
 .record-detail-card {
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 1px solid #eef2f8;
+  box-shadow: 0 2px 12px rgba(74, 144, 226, 0.08);
   margin-top: 0;
 }
 
@@ -202,33 +206,33 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 8px;
-  border-radius: 4px;
+  padding: 10px 12px;
+  border-radius: 6px;
   transition: background-color 0.2s;
 }
 
 .record-detail-row:hover {
-  background-color: #f5f7fa;
+  background-color: #f0f4ff;
 }
 
 .record-detail-label {
   font-size: 14px;
-  color: #606266;
+  color: #5a6a85;
 }
 
 .record-detail-value {
   font-size: 14px;
   font-weight: 600;
-  color: #303133;
+  color: #1a2840;
 }
 
 .highlight-score {
-  font-size: 18px;
-  color: #409EFF;
+  font-size: 20px;
+  color: #4A90E2;
 }
 
 .pass-success {
-  color: #67c23a;
+  color: #52c4bf;
   font-weight: bold;
 }
 
@@ -238,7 +242,11 @@ export default {
 }
 </style>
 <style lang="scss">
+.record-page.app-contain {
+  padding: 24px !important;
+  background: linear-gradient(135deg, #f0f4ff 0%, #f7f9fc 50%, #eef3fb 100%) !important;
+}
 .record-row-active td {
-  background-color: #ecf5ff !important;
+  background-color: #f0f4ff !important;
 }
 </style>

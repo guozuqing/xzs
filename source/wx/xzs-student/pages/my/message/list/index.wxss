@@ -1,1 +1,76 @@
-/* pages/user/message/index.wxss */
+/* pages/my/message/list/index.wxss */
+
+.msg-list-page {
+  padding-bottom: 40rpx;
+}
+
+.msg-header-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx 30rpx;
+}
+
+.msg-header-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.msg-header-count {
+  font-size: 24rpx;
+  color: #bbb;
+}
+
+.msg-list {
+  padding: 0 24rpx;
+}
+
+.msg-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.msg-card:active {
+  background: #fafafa;
+}
+
+.msg-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.msg-card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.msg-card-content {
+  font-size: 26rpx;
+  color: #999;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 16rpx;
+}
+
+.msg-card-footer {
+  text-align: right;
+  padding-top: 12rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.msg-card-action {
+  font-size: 26rpx;
+  color: #4A90E2;
+}

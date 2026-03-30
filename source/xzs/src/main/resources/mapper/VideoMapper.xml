@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mindskip.xzs.repository.VideoMapper">
+  <resultMap id="BaseResultMap" type="com.mindskip.xzs.domain.Video">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="subject_id" jdbcType="INTEGER" property="subjectId" />
+    <result column="video_url" jdbcType="VARCHAR" property="videoUrl" />
+    <result column="cover_url" jdbcType="VARCHAR" property="coverUrl" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="grade_level" jdbcType="INTEGER" property="gradeLevel" />
+    <result column="item_order" jdbcType="INTEGER" property="itemOrder" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, subject_id, video_url, cover_url, description, grade_level, item_order, create_user, create_time, deleted
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_video
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_video
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mindskip.xzs.domain.Video" useGeneratedKeys="true" keyProperty="id">
+    insert into t_video (name, subject_id, video_url,
+      cover_url, description, grade_level,
+      item_order, create_user, create_time, deleted)
+    values (#{name,jdbcType=VARCHAR}, #{subjectId,jdbcType=INTEGER}, #{videoUrl,jdbcType=VARCHAR},
+      #{coverUrl,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{gradeLevel,jdbcType=INTEGER},
+      #{itemOrder,jdbcType=INTEGER}, #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.mindskip.xzs.domain.Video" useGeneratedKeys="true" keyProperty="id">
+    insert into t_video
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">name,</if>
+      <if test="subjectId != null">subject_id,</if>
+      <if test="videoUrl != null">video_url,</if>
+      <if test="coverUrl != null">cover_url,</if>
+      <if test="description != null">description,</if>
+      <if test="gradeLevel != null">grade_level,</if>
+      <if test="itemOrder != null">item_order,</if>
+      <if test="createUser != null">create_user,</if>
+      <if test="createTime != null">create_time,</if>
+      <if test="deleted != null">deleted,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">#{name,jdbcType=VARCHAR},</if>
+      <if test="subjectId != null">#{subjectId,jdbcType=INTEGER},</if>
+      <if test="videoUrl != null">#{videoUrl,jdbcType=VARCHAR},</if>
+      <if test="coverUrl != null">#{coverUrl,jdbcType=VARCHAR},</if>
+      <if test="description != null">#{description,jdbcType=VARCHAR},</if>
+      <if test="gradeLevel != null">#{gradeLevel,jdbcType=INTEGER},</if>
+      <if test="itemOrder != null">#{itemOrder,jdbcType=INTEGER},</if>
+      <if test="createUser != null">#{createUser,jdbcType=INTEGER},</if>
+      <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+      <if test="deleted != null">#{deleted,jdbcType=BIT},</if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mindskip.xzs.domain.Video">
+    update t_video
+    <set>
+      <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+      <if test="subjectId != null">subject_id = #{subjectId,jdbcType=INTEGER},</if>
+      <if test="videoUrl != null">video_url = #{videoUrl,jdbcType=VARCHAR},</if>
+      <if test="coverUrl != null">cover_url = #{coverUrl,jdbcType=VARCHAR},</if>
+      <if test="description != null">description = #{description,jdbcType=VARCHAR},</if>
+      <if test="gradeLevel != null">grade_level = #{gradeLevel,jdbcType=INTEGER},</if>
+      <if test="itemOrder != null">item_order = #{itemOrder,jdbcType=INTEGER},</if>
+      <if test="deleted != null">deleted = #{deleted,jdbcType=BIT},</if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mindskip.xzs.domain.Video">
+    update t_video
+    set name = #{name,jdbcType=VARCHAR},
+      subject_id = #{subjectId,jdbcType=INTEGER},
+      video_url = #{videoUrl,jdbcType=VARCHAR},
+      cover_url = #{coverUrl,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      grade_level = #{gradeLevel,jdbcType=INTEGER},
+      item_order = #{itemOrder,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="page" resultMap="BaseResultMap" parameterType="com.mindskip.xzs.viewmodel.admin.video.VideoPageRequestVM">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_video
+    <where>
+       and deleted='f'
+      <if test="id != null">
+        and id= #{id}
+      </if>
+      <if test="subjectId != null">
+        and subject_id= #{subjectId}
+      </if>
+      <if test="gradeLevel != null">
+        and grade_level= #{gradeLevel}
+      </if>
+    </where>
+    order by item_order, id desc
+  </select>
+
+  <select id="allVideo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from t_video where deleted='f'
+    order by item_order, id desc
+  </select>
+
+  <select id="getVideoBySubjectId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from t_video where deleted='f' and subject_id= #{subjectId}
+    order by item_order, id desc
+  </select>
+
+</mapper>

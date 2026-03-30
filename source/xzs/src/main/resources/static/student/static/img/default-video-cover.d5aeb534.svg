@@ -1,0 +1,6 @@
+<svg width="280" height="160" viewBox="0 0 280 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="280" height="160" fill="#F5F5F5"/>
+  <circle cx="140" cy="80" r="25" fill="#CCCCCC"/>
+  <path d="M150 80L135 70V90L150 80Z" fill="#FFFFFF"/>
+  <text x="140" y="120" font-family="Arial" font-size="12" fill="#999999" text-anchor="middle">视频封面图片</text>
+</svg>

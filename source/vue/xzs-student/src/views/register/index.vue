@@ -1,54 +1,77 @@
 <template>
-  <div class="lowin  lowin-blue">
-    <div class="lowin-brand">
-      <img src="@/assets/logo2.png" alt="logo" style="margin-top: 12px">
-    </div>
-    <div class="lowin-wrapper">
-      <div class="lowin-box lowin-register">
-        <div class="lowin-box-inner">
-          <el-form ref="loginForm" :model="loginForm">
-            <p>天空领域-培训发展部开源考试系统</p>
-            <div class="lowin-group">
-              <label>用户名 </label>
-              <el-input ref="userName" v-model="loginForm.userName" class="lowin-input" placeholder="用户名"
-                        name="userName" type="text" tabindex="1" auto-complete="on"/>
-            </div>
-            <div class="lowin-group password-group">
-              <label>密码</label>
-              <el-input class="lowin-input" ref="password" v-model="loginForm.password"
-                        placeholder="密码" name="password" tabindex="2" auto-complete="on"
-                        @keyup.enter.native="handleLogin"/>
-            </div>
-            <div class="lowin-group">
-              <label>学科 </label>
-              <el-select class="lowin-input" v-model="loginForm.userLevel" placeholder="学科">
-                <el-option v-for="item in subjects" :key="item.id" :value="item.id" :label="item.name"></el-option>
-              </el-select>
-            </div>
-            <el-button type="text" class="lowin-btn login-btn" @click.native.prevent="handleRegister">注册</el-button>
-            <div class="text-foot">
-              已有账号?
-              <router-link to="/login" class="login-link">
-                登录
-              </router-link>
-            </div>
-          </el-form>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="title-container">
+        <div class="logo-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+            <rect width="48" height="48" rx="12" fill="#4A90E2"/>
+            <path d="M14 24L22 32L34 16" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
+        <h3 class="title">天空领域</h3>
+        <p class="subtitle">培训发展部考试系统</p>
       </div>
+
+      <el-form ref="loginForm" :model="loginForm" auto-complete="on" label-position="left">
+        <el-form-item prop="userName">
+          <span class="svg-container">
+            <svg-icon icon-class="user" />
+          </span>
+          <el-input
+            ref="userName"
+            v-model="loginForm.userName"
+            placeholder="请输入用户名"
+            name="userName"
+            type="text"
+            tabindex="1"
+            auto-complete="on"
+          />
+        </el-form-item>
+
+        <el-form-item prop="password">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            ref="password"
+            v-model="loginForm.password"
+            type="password"
+            placeholder="请输入密码"
+            name="password"
+            tabindex="2"
+            auto-complete="on"
+            @keyup.enter.native="handleRegister"
+          />
+        </el-form-item>
+
+        <el-form-item prop="userLevel">
+          <span class="svg-container">
+            <svg-icon icon-class="education" />
+          </span>
+          <el-select v-model="loginForm.userLevel" placeholder="请选择学科" class="select-input">
+            <el-option v-for="item in subjects" :key="item.id" :value="item.id" :label="item.name"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-button :loading="loading" type="primary" class="login-btn" @click.native.prevent="handleRegister">
+          {{ loading ? '注册中...' : '注 册' }}
+        </el-button>
+      </el-form>
     </div>
+
     <div class="account-foot-copyright">
-      <span>Copyright ©2019-2026 天空领域培训发展部 版权所有</span>
+      <span>Copyright &copy; 2019-2026 天空领域培训发展部 版权所有</span>
     </div>
   </div>
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations } from 'vuex'
 import registerApi from '@/api/register'
 import subjectApi from '@/api/subject'
 
 export default {
-  name: 'Login',
+  name: 'Register',
   data () {
     return {
       loginForm: {
@@ -56,7 +79,8 @@ export default {
         password: '',
         userLevel: null
       },
-      subjects: []
+      subjects: [],
+      loading: false
     }
   },
   created () {
@@ -68,299 +92,205 @@ export default {
   methods: {
     handleRegister () {
       let _this = this
+      this.loading = true
       registerApi.register(this.loginForm).then(function (result) {
         if (result && result.code === 1) {
           _this.$router.push({ path: '/login' })
         } else {
+          _this.loading = false
           _this.$message.error(result.message)
         }
+      }).catch(function () {
+        _this.loading = false
       })
     },
     ...mapMutations('user', ['setUserName'])
-  },
-  computed: {
   }
 }
 </script>
 
 <style lang="scss">
-  .lowin-input {
-    .el-input__inner {
-      background-color: transparent !important;
-      border: 0px !important;
+/* 覆盖 element-ui 输入框样式，适配浅色主题 */
+.login-container .el-input {
+  display: inline-block;
+  height: 46px;
+  width: 85%;
+
+  input {
+    background: transparent;
+    border: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 0;
+    padding: 12px 5px 12px 15px;
+    color: #333;
+    height: 46px;
+    caret-color: #4A90E2;
+
+    &::placeholder {
+      color: #aab0b8;
+    }
+
+    &:-webkit-autofill {
+      box-shadow: 0 0 0px 1000px #fff inset !important;
+      -webkit-text-fill-color: #333 !important;
     }
   }
+}
+
+.login-container .el-form-item {
+  border: 1px solid #e0e6ed;
+  background: #fff;
+  border-radius: 8px;
+  color: #333;
+  margin-bottom: 20px;
+  transition: border-color 0.3s;
+
+  &:focus-within {
+    border-color: #4A90E2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.12);
+  }
+}
+
+.login-container .el-form-item__error {
+  padding-left: 50px;
+}
+
+.login-container .el-select {
+  display: inline-block;
+  width: 85%;
+
+  .el-input__inner {
+    background: transparent;
+    border: 0;
+    height: 46px;
+    color: #333;
+    padding-left: 15px;
+  }
+}
 </style>
 
-<style scoped>
+<style lang="scss" scoped>
+.login-container {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #e8f0fe 0%, #f0f4ff 50%, #e8f4fd 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
 
-  .lowin {
-    /* variables */
-    --color-primary: #44a0b3;
-    --color-grey: rgba(68, 160, 179, .06);
-    --color-dark: rgba(68, 160, 179, .5);
-    --color-semidark: rgba(68, 160, 179, .5);
-
-    text-align: center;
-    margin: 20px 0 0 0;
-    font-family: 'Segoe UI';
-    font-size: 14px;
-  }
-
-  .lowin .lowin-wrapper {
-    -webkit-transition: all 1s;
-    -o-transition: all 1s;
-    transition: all 1s;
-    -webkit-perspective: 1000px;
-    perspective: 1000px;
-    position: relative;
-    height: 100%;
-    width: 360px;
-    margin: 0 auto;
-  }
-
-  .lowin.lowin-blue {
-    --color-primary: #0081C6;
-    --color-grey: rgba(0, 129, 198, .05);
-    --color-dark: rgba(0, 129, 198, .7);
-    --color-semidark: rgba(0, 129, 198, .45);
-  }
-
-  .lowin a {
-    color: var(--color-primary);
-    text-decoration: none;
-    border-bottom: 1px dashed var(--color-semidark);
-    margin-top: -3px;
-    padding-bottom: 2px;
-  }
-
-  .lowin * {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-  }
-
-  .lowin .lowin-brand {
-    overflow: hidden;
-    width: 100px;
-    height: 100px;
-    margin: 0 auto -50px auto;
+  &::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 320px;
+    height: 320px;
     border-radius: 50%;
-    -webkit-box-shadow: 0 4px 40px rgba(0, 0, 0, .07);
-    box-shadow: 0 4px 40px rgba(0, 0, 0, .07);
-    padding: 10px;
-    background-color: #fff;
-    z-index: 1;
-    position: relative;
+    background: rgba(74, 144, 226, 0.1);
   }
 
-  .lowin .lowin-brand img {
-    width: 100%;
-  }
-
-  .lowin .lowin-box {
-    width: 100%;
+  &::after {
+    content: '';
     position: absolute;
-    left: 0;
+    bottom: -60px;
+    left: -60px;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: rgba(74, 144, 226, 0.08);
+  }
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 420px;
+  max-width: calc(100% - 40px);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(74, 144, 226, 0.15), 0 2px 8px rgba(0,0,0,0.06);
+  padding: 48px 48px 40px;
+}
+
+.title-container {
+  text-align: center;
+  margin-bottom: 36px;
+
+  .logo-icon {
+    margin-bottom: 16px;
   }
 
-  .lowin .lowin-box-inner {
-    background-color: #fff;
-    -webkit-box-shadow: 0 7px 25px rgba(0, 0, 0, .08);
-    box-shadow: 0 7px 25px rgba(0, 0, 0, .08);
-    padding: 60px 25px 25px 25px;
-    text-align: left;
-    border-radius: 3px;
-  }
-
-  .lowin .lowin-box::after {
-    content: ' ';
-    -webkit-box-shadow: 0 0 25px rgba(0, 0, 0, .1);
-    box-shadow: 0 0 25px rgba(0, 0, 0, .1);
-    -webkit-transform: translate(0, -92.6%) scale(.88);
-    -ms-transform: translate(0, -92.6%) scale(.88);
-    transform: translate(0, -92.6%) scale(.88);
-    border-radius: 3px;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #fff;
-    z-index: -1;
-  }
-
-  .lowin .lowin-box.lowin-flip {
-    -webkit-transform: rotate3d(0, 1, 0, -180deg);
-    transform: rotate3d(0, 1, 0, -180deg);
-    display: none;
-    opacity: 0;
-  }
-
-  .lowin .lowin-box p {
-    color: var(--color-semidark);
+  .title {
+    font-size: 26px;
+    color: #1a2840;
+    margin: 0 0 6px;
     font-weight: 700;
-    margin-bottom: 20px;
-    text-align: center;
+    letter-spacing: 2px;
   }
 
-  .lowin .lowin-box .lowin-group {
-    margin-bottom: 30px;
+  .subtitle {
+    font-size: 13px;
+    color: #8a9bb0;
+    margin: 0;
+    letter-spacing: 1px;
+  }
+}
+
+.svg-container {
+  padding: 6px 5px 6px 15px;
+  color: #aab0b8;
+  vertical-align: middle;
+  width: 30px;
+  display: inline-block;
+  transition: color 0.2s;
+}
+
+.select-input {
+  vertical-align: middle;
+}
+
+.login-btn {
+  width: 100%;
+  height: 46px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  border-radius: 8px;
+  margin-top: 8px;
+  background: linear-gradient(90deg, #4A90E2 0%, #5ba3f0 100%);
+  border: none;
+  box-shadow: 0 4px 16px rgba(74, 144, 226, 0.35);
+  transition: all 0.3s;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.45);
   }
 
-  .lowin .lowin-box label {
-    margin-bottom: 5px;
-    display: inline-block;
-    width: 100%;
-    color: var(--color-semidark);
-    font-weight: 700;
+  &:active {
+    transform: translateY(0);
   }
+}
 
-  .lowin .lowin-box label a {
-    float: right;
+.account-foot-copyright {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  font-size: 12px;
+  color: #9aaec4;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media only screen and (max-width: 480px) {
+  .login-card {
+    padding: 36px 24px 28px;
   }
-
-  .lowin .lowin-box .lowin-input {
-    background-color: var(--color-grey);
-    color: var(--color-dark);
-    border: none;
-    border-radius: 3px;
-    padding: 5px 20px;
-    width: 100%;
-    outline: 0;
-  }
-
-  .lowin .lowin-box .lowin-btn {
-    display: inline-block;
-    width: 100%;
-    border: none;
-    color: #fff;
-    padding: 15px;
-    border-radius: 3px;
-    background-color: var(--color-primary);
-    -webkit-box-shadow: 0 2px 7px var(--color-semidark);
-    box-shadow: 0 2px 7px var(--color-semidark);
-    font-weight: 700;
-    outline: 0;
-    cursor: pointer;
-    -webkit-transition: all .5s;
-    -o-transition: all .5s;
-    transition: all .5s;
-  }
-
-  .lowin .lowin-box .lowin-btn:active {
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
-
-  .lowin .lowin-box .lowin-btn:hover {
-    opacity: .9;
-  }
-
-  .lowin .text-foot {
-    text-align: center;
-    padding: 10px;
-    font-weight: 700;
-    margin-top: 20px;
-    color: var(--color-semidark);
-  }
-
-  /* animation */
-  .lowin .lowin-box.lowin-animated {
-    -webkit-animation-name: LowinAnimated;
-    animation-name: LowinAnimated;
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
-    -webkit-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
-    -webkit-animation-timing-function: ease-in-out;
-    animation-timing-function: ease-in-out;
-  }
-
-  .lowin .lowin-box.lowin-animatedback {
-    -webkit-animation-name: LowinAnimatedBack;
-    animation-name: LowinAnimatedBack;
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
-    -webkit-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
-    -webkit-animation-timing-function: ease-in-out;
-    animation-timing-function: ease-in-out;
-  }
-
-  .lowin .lowin-box.lowin-animated-flip {
-    -webkit-animation-name: LowinAnimatedFlip;
-    animation-name: LowinAnimatedFlip;
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
-    -webkit-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
-    -webkit-animation-timing-function: ease-in-out;
-    animation-timing-function: ease-in-out;
-  }
-
-  .lowin .lowin-box.lowin-animated-flipback {
-    -webkit-animation-name: LowinAnimatedFlipBack;
-    animation-name: LowinAnimatedFlipBack;
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
-    -webkit-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
-    -webkit-animation-timing-function: ease-in-out;
-    animation-timing-function: ease-in-out;
-  }
-
-  .lowin .lowin-brand.lowin-animated {
-    -webkit-animation-name: LowinBrandAnimated;
-    animation-name: LowinBrandAnimated;
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
-    -webkit-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
-    -webkit-animation-timing-function: ease-in-out;
-    animation-timing-function: ease-in-out;
-  }
-
-  .lowin .lowin-group.password-group {
-    -webkit-transition: all 1s;
-    -o-transition: all 1s;
-    transition: all 1s;
-  }
-
-  .lowin .lowin-group.password-group.lowin-animated {
-    -webkit-animation-name: LowinPasswordAnimated;
-    animation-name: LowinPasswordAnimated;
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
-    -webkit-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
-    -webkit-animation-timing-function: ease-in-out;
-    animation-timing-function: ease-in-out;
-    -webkit-transform-origin: 0 0;
-    -ms-transform-origin: 0 0;
-    transform-origin: 0 0;
-  }
-
-  .lowin .lowin-group.password-group.lowin-animated-back {
-    -webkit-animation-name: LowinPasswordAnimatedBack;
-    animation-name: LowinPasswordAnimatedBack;
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
-    -webkit-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
-    -webkit-animation-timing-function: ease-in-out;
-    animation-timing-function: ease-in-out;
-    -webkit-transform-origin: 0 0;
-    -ms-transform-origin: 0 0;
-    transform-origin: 0 0;
-  }
-
-  @media screen and (max-width: 320px) {
-    .lowin .lowin-wrapper {
-      width: 100%;
-    }
-
-    .lowin .lowin-box {
-      padding: 0 10px;
-    }
-  }
+}
 </style>

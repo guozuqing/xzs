@@ -279,4 +279,18 @@
     </foreach>
   </update>
 
+  <select id="selectAllWrongByUser" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_exam_paper_question_customer_answer
+    WHERE do_right = FALSE AND create_user = #{createUser}
+    ORDER BY id DESC
+  </select>
+
+  <update id="updateDoRightById">
+    UPDATE t_exam_paper_question_customer_answer
+    SET do_right = #{doRight}, customer_score = #{customerScore}
+    WHERE id = #{id}
+  </update>
+
 </mapper>

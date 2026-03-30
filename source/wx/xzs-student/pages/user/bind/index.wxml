@@ -1,25 +1,45 @@
 <!--pages/user/bind/index.wxml-->
-<view class="card-image-container">
-  <image src="/assets/logo2.png" style="width:175px;height:147px"></image>
-</view>
-
-<form bindsubmit='formSubmit'>
-  <i-panel title="用户名">
-    <i-input value="{{ userName }}" name="userName" maxlength="-1"  />
-  </i-panel>
-
-  <i-panel title="密码">
-    <i-input value="{{ password }}" name="password" maxlength="-1" />
-  </i-panel>
-
-  <view>
-    <button class="i-btn i-btn- i-btn-primary i-btn-square" form-type='submit'>登录</button>
+<view class="login-page">
+  <!-- 顶部banner图 -->
+  <view class="login-banner">
+    <image src="/assets/banner-bg.png" class="login-banner-img" mode="aspectFill"></image>
+    <view class="login-banner-overlay"></view>
   </view>
-  <view style="padding:font-size: 26rpx;color: #606266;padding: 20rpx 50rpx;">
-    天空领域-培训发展部是一款学校考试系统，仅供学校内部学生使用，需要提供账号密码。没有账号?
-    <text  bindtap="register" style="color:#4399fc">马上注册</text>
+
+  <!-- 表单卡片 (上移覆盖banner底部) -->
+  <view class="login-card-wrap">
+    <view class="login-card">
+      <image src="/assets/sky-logo.png" class="login-logo" mode="aspectFit"></image>
+      <text class="login-subtitle">培训发展部考试系统</text>
+
+      <form bindsubmit='formSubmit'>
+        <view class="login-field">
+          <view class="login-field-icon">
+            <text class="field-icon-text">👤</text>
+          </view>
+          <input class="login-field-input" name="userName" value="{{userName}}" placeholder="请输入用户名" maxlength="-1" />
+        </view>
+
+        <view class="login-field">
+          <view class="login-field-icon">
+            <text class="field-icon-text">🔒</text>
+          </view>
+          <input class="login-field-input" name="password" value="{{password}}" placeholder="请输入密码" password="true" maxlength="-1" />
+        </view>
+
+        <button class="login-btn" form-type='submit'>登 录</button>
+      </form>
+
+      <view class="login-footer">
+        <text class="login-footer-text">没有账号? <text bindtap="register" class="login-register-link">马上注册</text></text>
+      </view>
+    </view>
+
+    <view class="login-copyright">
+      <text class="login-copyright-text">Copyright © 2019-2026 天空领域培训发展部 版权所有</text>
+    </view>
   </view>
+
   <i-spin size="large" fix wx:if="{{ spinShow }}"></i-spin>
-</form>
-
-<i-message id="message" />
+  <i-message id="message" />
+</view>

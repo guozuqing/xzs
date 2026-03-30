@@ -163,10 +163,23 @@ export default {
     },
     submitForm () {
       let _this = this
-      this.$confirm('确定要交卷吗？', '提示', {
+      let unanswered = this.answer.answerItems.filter(i => !i.completed)
+      let unansweredCount = unanswered.length
+      let msg = ''
+      if (unansweredCount > 0) {
+        let unansweredNos = unanswered.map(i => '第' + i.itemOrder + '题').join('、')
+        msg = '<div style="text-align:left;font-size:14px;">' +
+          '<p style="color:#E6A23C;font-weight:bold;font-size:15px;">⚠ 您还有 ' + unansweredCount + ' 道题未作答！</p>' +
+          '<p>未答题目：' + unansweredNos + '</p>' +
+          '<p style="margin-top:8px;">确定要交卷吗？</p></div>'
+      } else {
+        msg = '<div style="text-align:left;font-size:14px;"><p style="color:#67C23A;font-weight:bold;">✓ 所有题目已作答完毕，确定要交卷吗？</p></div>'
+      }
+      this.$confirm(msg, '交卷确认', {
         confirmButtonText: '确定交卷',
         cancelButtonText: '继续答题',
-        type: 'warning'
+        type: unansweredCount > 0 ? 'warning' : 'info',
+        dangerouslyUseHTMLString: true
       }).then(() => {
         window.clearInterval(_this.timer)
         _this.formLoading = true

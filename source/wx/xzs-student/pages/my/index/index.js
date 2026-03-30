@@ -8,6 +8,10 @@ Page({
   onLoad: function(options) {
     this.loadUserInfo()
   },
+  goPage(e) {
+    let url = e.currentTarget.dataset.url
+    wx.navigateTo({ url: url })
+  },
   loadUserInfo() {
     let _this = this
     _this.setData({

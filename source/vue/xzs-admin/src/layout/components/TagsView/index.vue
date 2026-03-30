@@ -199,8 +199,8 @@ export default {
   height: 34px;
   width: 100%;
   background: #fff;
-  border-bottom: 1px solid #d8dce5;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+  border-bottom: 1px solid #eef2f8;
+  box-shadow: 0 1px 4px rgba(74, 144, 226, 0.06);
   .tags-view-wrapper {
     .tags-view-item {
       display: inline-block;
@@ -208,23 +208,29 @@ export default {
       cursor: pointer;
       height: 26px;
       line-height: 26px;
-      border: 1px solid #d8dce5;
-      color: #495060;
+      border: 1px solid #e0e6ed;
+      color: #5a6a85;
       background: #fff;
       padding: 0 8px;
       font-size: 12px;
       margin-left: 5px;
       margin-top: 4px;
+      border-radius: 4px;
+      transition: all 0.2s;
       &:first-of-type {
         margin-left: 15px;
       }
       &:last-of-type {
         margin-right: 15px;
       }
+      &:hover {
+        color: #4A90E2;
+        border-color: #b8d4f0;
+      }
       &.active {
-        background-color: #42b983;
+        background-color: #4A90E2;
         color: #fff;
-        border-color: #42b983;
+        border-color: #4A90E2;
         &::before {
           content: '';
           background: #fff;
@@ -245,17 +251,19 @@ export default {
     position: absolute;
     list-style-type: none;
     padding: 5px 0;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 12px;
     font-weight: 400;
     color: #333;
-    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
+    box-shadow: 0 4px 16px rgba(74, 144, 226, 0.15);
+    border: 1px solid #eef2f8;
     li {
       margin: 0;
       padding: 7px 16px;
       cursor: pointer;
       &:hover {
-        background: #eee;
+        background: #f0f4ff;
+        color: #4A90E2;
       }
     }
   }
@@ -280,7 +288,7 @@ export default {
         vertical-align: -3px;
       }
       &:hover {
-        background-color: #b4bccc;
+        background-color: #4A90E2;
         color: #fff;
       }
     }

@@ -23,6 +23,8 @@
           </el-button>
           <el-button slot="reference" type="primary" class="link-left">添加</el-button>
         </el-popover>
+        <el-button type="success" class="link-left" @click="$router.push('/exam/question/import')">导入试题</el-button>
+        <el-button type="warning" class="link-left" :loading="exporting" @click="exportQuestions">导出试题</el-button>
       </el-form-item>
     </el-form>
     <el-table v-loading="listLoading" :data="tableData" border fit highlight-current-row style="width: 100%">
@@ -66,6 +68,7 @@ export default {
         pageSize: 10
       },
       listLoading: true,
+      exporting: false,
       tableData: [],
       total: 0,
       questionShow: {
@@ -121,6 +124,42 @@ export default {
         } else {
           _this.$message.error(re.message)
         }
+      })
+    },
+    exportQuestions () {
+      this.exporting = true
+      let query = {
+        id: this.queryParam.id,
+        questionType: this.queryParam.questionType,
+        subjectId: this.queryParam.subjectId
+      }
+      questionApi.exportQuestions(query).then(re => {
+        this.exporting = false
+        if (re.code === 1) {
+          let data = re.response
+          if (!data || data.length === 0) {
+            this.$message.warning('没有可导出的题目')
+            return
+          }
+          let json = JSON.stringify(data, null, 2)
+          let blob = new Blob([json], { type: 'application/json' })
+          let url = URL.createObjectURL(blob)
+          let a = document.createElement('a')
+          a.href = url
+          let now = new Date()
+          let ts = now.getFullYear() + '' + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0') + '_' + String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0')
+          a.download = '试题导出_' + ts + '.json'
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          URL.revokeObjectURL(url)
+          this.$message.success('导出成功，共 ' + data.length + ' 题')
+        } else {
+          this.$message.error(re.message)
+        }
+      }).catch(() => {
+        this.exporting = false
+        this.$message.error('导出失败')
       })
     },
     questionTypeFormatter (row, column, cellValue, index) {

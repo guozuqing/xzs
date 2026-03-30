@@ -1,24 +1,80 @@
-/* pages/user/log/index.wxss */
-@import '/component/iView/steps/index.wxss';
-@import '/component/iView/step/index.wxss';
+/* pages/my/log/index.wxss */
 
-.i-step-ico {
-  background: #fff !important;
-  box-sizing: border-box !important;
+.log-page {
+  padding-bottom: 40rpx;
 }
 
-.i-step-item-title {
-  font-size: 12px;
-  font-weight: 400 !important;
+.log-header-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx 30rpx;
 }
 
-.i-step-item-content {
-  font-size: 12px;
-  font-weight: 400 !important;
+.log-header-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
 }
 
-.user-log-page {
+.log-header-count {
+  font-size: 24rpx;
+  color: #bbb;
+}
+
+.log-timeline {
+  padding: 0 24rpx 0 48rpx;
+}
+
+.log-item {
+  display: flex;
+  position: relative;
+}
+
+.log-dot-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.log-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  background: #4A90E2;
+  border: 4rpx solid #e0e0e0;
+  margin-top: 8rpx;
+  flex-shrink: 0;
+}
+
+.log-line {
+  width: 4rpx;
+  flex: 1;
+  background: #f0f0f0;
+  min-height: 40rpx;
+}
+
+.log-content-card {
+  flex: 1;
   background: #fff;
-  padding: 5px;
-  padding-top: 10px;
+  border-radius: 16rpx;
+  padding: 24rpx 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.log-time {
+  font-size: 22rpx;
+  color: #bbb;
+  margin-bottom: 8rpx;
+}
+
+.log-text {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
 }

@@ -2,89 +2,45 @@
 let app = getApp()
 Page({
   data: {
-    paperType: 1,
     spinShow: false,
-    loadMoreLoad: false,
-    loadMoreTip: '暂无数据',
-    queryParam: {
-      paperType: 1,
-      pageIndex: 1,
-      pageSize: app.globalData.pageSize
-    },
-    tableData: [],
-    total: 1
+    examConfigList: []
   },
   onLoad: function(options) {
-    this.setData({
-      spinShow: true
-    });
-    this.search(true)
-  },
-  tabChange({
-    detail
-  }) {
-    this.setData({
-      spinShow: true
-    });
-    let size = app.globalData.pageSize
-    this.setData({
-      paperType: detail.key,
-      queryParam: {
-        paperType: detail.key,
-        pageIndex: 1,
-        pageSize: app.globalData.pageSize
-      }
-    });
-    this.search(true)
+    this.setData({ spinShow: true });
+    this.loadExamConfig()
   },
   onPullDownRefresh() {
-    this.setData({
-      spinShow: true
-    });
-    if (!this.loading) {
-      this.setData({
-        ['queryParam.pageIndex']: 1
-      });
-      this.search(true)
-    }
+    this.setData({ spinShow: true });
+    this.loadExamConfig()
   },
-  onReachBottom() {
-    if (!this.loading && this.data.queryParam.pageIndex < this.data.total) {
-      this.setData({
-        loadMoreLoad: true,
-        loadMoreTip: '正在加载'
-      });
-      this.setData({
-        ['queryParam.pageIndex']: this.data.queryParam.pageIndex + 1
-      });
-      this.search(false)
-    }
-  },
-  search: function(override) {
+  loadExamConfig: function() {
     let _this = this
-    app.formPost('/api/wx/student/exampaper/pageList', this.data.queryParam).then(res => {
-      _this.setData({
-        spinShow: false
-      });
+    app.formPost('/api/wx/student/dashboard/examConfig', null).then(res => {
+      _this.setData({ spinShow: false });
       wx.stopPullDownRefresh()
       if (res.code === 1) {
-        const re = res.response
-        _this.setData({
-          ['queryParam.pageIndex']: re.pageNum,
-          tableData: override ? re.list : this.data.tableData.concat(re.list),
-          total: re.pages
-        });
-        if (re.pageNum >= re.pages) {
-          this.setData({
-            loadMoreLoad: false,
-            loadMoreTip: '暂无数据'
-          });
-        }
+        _this.setData({ examConfigList: res.response.examItems || [] });
       }
     }).catch(e => {
-      _this.setData({
-        spinShow: false
-      });
+      _this.setData({ spinShow: false });
+      wx.stopPullDownRefresh()
+      app.message(e, 'error')
+    })
+  },
+  goGeneratePaper: function(e) {
+    let item = e.currentTarget.dataset.item
+    let _this = this
+    wx.showLoading({ title: '正在组卷', mask: true })
+    app.jsonPost('/api/wx/student/dashboard/generatePaper', item).then(res => {
+      wx.hideLoading()
+      if (res.code === 1) {
+        let paperId = res.response.id
+        wx.navigateTo({ url: '/pages/exam/do/index?id=' + paperId })
+      } else {
+        app.message(res.message, 'error')
+      }
+    }).catch(e => {
+      wx.hideLoading()
       app.message(e, 'error')
     })
   }
