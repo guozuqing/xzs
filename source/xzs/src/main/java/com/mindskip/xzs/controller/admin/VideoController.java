@@ -156,23 +156,12 @@ public class VideoController extends BaseApiController {
 
     private String transcodeToH264IfNeeded(File videoFile, String baseName) {
         try {
-            ProcessBuilder pb = new ProcessBuilder("ffprobe", "-v", "quiet",
-                    "-select_streams", "v:0", "-show_entries", "stream=codec_name",
-                    "-of", "csv=p=0", videoFile.getAbsolutePath());
-            pb.redirectErrorStream(true);
-            Process process = pb.start();
-            String codec = readStream(process.getInputStream()).trim();
-            process.waitFor();
-
-            if ("h264".equalsIgnoreCase(codec)) {
-                return videoFile.getName();
-            }
-
-            logger.info("视频编码为{}，开始转码为H.264...", codec);
+            logger.info("开始转码为H.264 Baseline Profile...");
             String outputFileName = baseName + "_h264.mp4";
             File outputFile = new File(UPLOAD_DIR + outputFileName);
             ProcessBuilder ffmpeg = new ProcessBuilder("ffmpeg", "-i", videoFile.getAbsolutePath(),
-                    "-c:v", "libx264", "-preset", "fast", "-crf", "23",
+                    "-c:v", "libx264", "-profile:v", "baseline", "-level", "3.0",
+                    "-preset", "fast", "-crf", "23",
                     "-c:a", "aac", "-b:a", "128k",
                     "-movflags", "+faststart",
                     "-y", outputFile.getAbsolutePath());

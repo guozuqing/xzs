@@ -235,6 +235,11 @@
     <where>
       and do_right=FALSE
       and create_user=#{createUser}
+      and id IN (
+        SELECT MAX(id) FROM t_exam_paper_question_customer_answer
+        WHERE do_right=FALSE AND create_user=#{createUser}
+        GROUP BY question_id
+      )
     </where>
   </select>
 
@@ -284,6 +289,11 @@
     <include refid="Base_Column_List"/>
     FROM t_exam_paper_question_customer_answer
     WHERE do_right = FALSE AND create_user = #{createUser}
+      AND id IN (
+        SELECT MAX(id) FROM t_exam_paper_question_customer_answer
+        WHERE do_right = FALSE AND create_user = #{createUser}
+        GROUP BY question_id
+      )
     ORDER BY id DESC
   </select>
 

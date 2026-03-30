@@ -1,6 +1,12 @@
 // pages/video/index/index.js
 const app = getApp()
 
+function fullUrl(url) {
+  if (!url) return ''
+  if (url.startsWith('http://') || url.startsWith('https://')) return url
+  return app.globalData.baseAPI + url
+}
+
 Page({
   data: {
     spinShow: false,
@@ -35,7 +41,11 @@ Page({
       _this.setData({ spinShow: false })
       wx.stopPullDownRefresh()
       if (res.code === 1) {
-        _this.setData({ videoList: res.response || [] })
+        let list = (res.response || []).map(item => {
+          if (item.coverUrl) item.coverUrl = fullUrl(item.coverUrl)
+          return item
+        })
+        _this.setData({ videoList: list })
       }
     }).catch(e => {
       _this.setData({ spinShow: false })

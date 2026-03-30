@@ -62,20 +62,28 @@
     </i-collapse>
   </view>
 
-  <!-- 固定试卷 -->
-  <view class="card" wx:if="{{fixedPaper.length > 0}}">
+  <!-- 试卷中心 -->
+  <view class="card" wx:if="{{examConfigList.length > 0}}">
     <view class="section-header">
       <view class="section-title-bar"></view>
-      <text class="section-title">固定试卷</text>
-      <text class="section-count">共{{fixedPaper.length}}套</text>
+      <text class="section-title">试卷中心</text>
+      <text class="section-count">共{{examConfigList.length}}套</text>
     </view>
-    <view class="paper-list">
-      <view class="paper-item" wx:for="{{fixedPaper}}" wx:key="{{item.id}}" bindtap="goPaperDo" data-id="{{item.id}}">
-        <view class="paper-item-left">
-          <view class="paper-type-dot" style="background:#4A90E2"></view>
-          <text class="paper-item-name">{{item.name}}</text>
+    <view class="exam-list">
+      <view class="exam-card" wx:for="{{examConfigList}}" wx:key="examName" bindtap="goGeneratePaper" data-item="{{item}}">
+        <view class="exam-card-left">
+          <view class="exam-card-icon">
+            <text class="exam-card-icon-text">{{item.examName[0] || '卷'}}</text>
+          </view>
         </view>
-        <text class="paper-item-arrow">></text>
+        <view class="exam-card-body">
+          <text class="exam-card-name">{{item.examName}}</text>
+          <text class="exam-card-desc">{{item.questionCount}}题 / {{item.totalScore}}分 / {{item.suggestTime}}分钟</text>
+          <text class="exam-card-desc" wx:if="{{item.lastScore}}">上次: {{item.lastScore}}分 {{item.lastResult}} ({{item.lastTime}})</text>
+        </view>
+        <view class="exam-card-right">
+          <text class="exam-card-btn">开始答题</text>
+        </view>
       </view>
     </view>
   </view>
@@ -102,7 +110,7 @@
   </view>
 
   <!-- 空状态 -->
-  <view class="card" wx:if="{{!spinShow && fixedPaper.length === 0 && timeLimitPaper.length === 0 && taskList.length === 0}}">
+  <view class="card" wx:if="{{!spinShow && examConfigList.length === 0 && timeLimitPaper.length === 0 && taskList.length === 0}}">
     <view class="empty-state">暂无考试安排</view>
   </view>
 

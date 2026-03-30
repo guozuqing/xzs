@@ -1,6 +1,12 @@
 // pages/video/detail/index.js
 const app = getApp()
 
+function fullUrl(url) {
+  if (!url) return ''
+  if (url.startsWith('http://') || url.startsWith('https://')) return url
+  return app.globalData.baseAPI + url
+}
+
 Page({
   data: {
     spinShow: false,
@@ -25,9 +31,9 @@ Page({
         let chapters = data.chapters || []
         let currentUrl = ''
         if (chapters.length > 0) {
-          currentUrl = chapters[0].videoUrl || ''
+          currentUrl = fullUrl(chapters[0].videoUrl)
         } else {
-          currentUrl = data.videoUrl || ''
+          currentUrl = fullUrl(data.videoUrl)
         }
         _this.setData({
           video: data,
@@ -47,11 +53,12 @@ Page({
     if (chapter && chapter.videoUrl) {
       this.setData({
         currentChapterIndex: index,
-        currentVideoUrl: chapter.videoUrl
+        currentVideoUrl: fullUrl(chapter.videoUrl)
       })
     }
   },
   onVideoError: function (e) {
-    app.message('视频加载失败', 'error')
+    console.error('video error:', e.detail)
+    app.message('视频加载失败，请检查视频地址', 'error')
   }
 })

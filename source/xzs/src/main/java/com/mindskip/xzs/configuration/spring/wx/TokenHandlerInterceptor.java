@@ -69,6 +69,10 @@ public class TokenHandlerInterceptor implements HandlerInterceptor {
 
         Date now = new Date();
         User user = userService.getUserByUserName(userToken.getUserName());
+        if (null == user) {
+            RestUtil.response(response, SystemCode.UNAUTHORIZED);
+            return false;
+        }
         if (now.before(userToken.getEndTime())) {
             wxContext.setContext(user,userToken);
             return true;

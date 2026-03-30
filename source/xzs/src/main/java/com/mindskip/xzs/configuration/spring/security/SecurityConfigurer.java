@@ -74,7 +74,8 @@ public class SecurityConfigurer {
          */
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.headers().frameOptions().disable();
+            http.headers().frameOptions().disable()
+                    .cacheControl().disable();
 
             List<String> securityIgnoreUrls = systemConfig.getSecurityIgnoreUrls();
             String[] ignores = new String[securityIgnoreUrls.size()];

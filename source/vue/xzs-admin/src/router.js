@@ -240,6 +240,13 @@ const constantRoutes = [
         component: () => import('@/views/answer/list'),
         name: 'AnswerPageList',
         meta: { title: '答卷列表', noCache: true }
+      },
+      {
+        path: 'read',
+        component: () => import('@/views/answer/read'),
+        name: 'AnswerPageRead',
+        meta: { title: '答卷详情', noCache: true, activeMenu: '/answer/list' },
+        hidden: true
       }
     ]
   },

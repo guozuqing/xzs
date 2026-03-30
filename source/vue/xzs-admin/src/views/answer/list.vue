@@ -27,6 +27,11 @@
       </el-table-column>
       <el-table-column prop="doTime" label="耗时" width="100px"/>
       <el-table-column prop="createTime" label="提交时间" width="160px"/>
+      <el-table-column label="操作" width="100px">
+        <template slot-scope="{row}">
+          <el-button type="primary" size="mini" @click="viewAnswer(row)">查看</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="queryParam.pageIndex" :limit.sync="queryParam.pageSize"
                 @pagination="search"/>
@@ -71,6 +76,9 @@ export default {
     submitForm () {
       this.queryParam.pageIndex = 1
       this.search()
+    },
+    viewAnswer (row) {
+      this.$router.push({ path: '/answer/read', query: { id: row.id } })
     },
     ...mapActions('exam', { initSubject: 'initSubject' })
   },

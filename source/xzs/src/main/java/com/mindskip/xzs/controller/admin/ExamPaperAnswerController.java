@@ -12,25 +12,28 @@ import com.mindskip.xzs.service.UserService;
 import com.mindskip.xzs.utility.DateTimeUtil;
 import com.mindskip.xzs.utility.ExamUtil;
 import com.mindskip.xzs.utility.PageInfoHelper;
+import com.mindskip.xzs.service.ExamPaperService;
+import com.mindskip.xzs.viewmodel.admin.exam.ExamPaperEditRequestVM;
 import com.mindskip.xzs.viewmodel.admin.paper.ExamPaperAnswerPageRequestVM;
+import com.mindskip.xzs.viewmodel.student.exam.ExamPaperReadVM;
+import com.mindskip.xzs.viewmodel.student.exam.ExamPaperSubmitVM;
 import com.mindskip.xzs.viewmodel.student.exampaper.ExamPaperAnswerPageResponseVM;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController("AdminExamPaperAnswerController")
 @RequestMapping(value = "/api/admin/examPaperAnswer")
 public class ExamPaperAnswerController extends BaseApiController {
 
     private final ExamPaperAnswerService examPaperAnswerService;
+    private final ExamPaperService examPaperService;
     private final SubjectService subjectService;
     private final UserService userService;
 
     @Autowired
-    public ExamPaperAnswerController(ExamPaperAnswerService examPaperAnswerService, SubjectService subjectService, UserService userService) {
+    public ExamPaperAnswerController(ExamPaperAnswerService examPaperAnswerService, ExamPaperService examPaperService, SubjectService subjectService, UserService userService) {
         this.examPaperAnswerService = examPaperAnswerService;
+        this.examPaperService = examPaperService;
         this.subjectService = subjectService;
         this.userService = userService;
     }
@@ -55,5 +58,15 @@ public class ExamPaperAnswerController extends BaseApiController {
         return RestResponse.ok(page);
     }
 
+    @RequestMapping(value = "/read/{id}", method = RequestMethod.POST)
+    public RestResponse<ExamPaperReadVM> read(@PathVariable Integer id) {
+        ExamPaperAnswer examPaperAnswer = examPaperAnswerService.selectById(id);
+        ExamPaperReadVM vm = new ExamPaperReadVM();
+        ExamPaperEditRequestVM paper = examPaperService.examPaperToVM(examPaperAnswer.getExamPaperId());
+        ExamPaperSubmitVM answer = examPaperAnswerService.examPaperAnswerToVM(examPaperAnswer.getId());
+        vm.setPaper(paper);
+        vm.setAnswer(answer);
+        return RestResponse.ok(vm);
+    }
 
 }
